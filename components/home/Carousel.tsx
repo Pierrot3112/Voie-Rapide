@@ -19,25 +19,21 @@ const ImageSlider = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000); // Changer toutes les 3 secondes
 
-    // Nettoyer l'intervalle à la désactivation du composant
     return () => clearInterval(interval);
   }, []);
 
-  // Fonction pour rendre chaque élément du carrousel
   const renderItem = ({ item }) => (
     <Image source={item} style={styles.image} />
   );
 
   return (
     <View style={styles.container}>
-      {/* Liste des images */}
       <FlatList
         data={images}
         horizontal
         pagingEnabled
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        // Le scroll s'arrêtera à l'image courante
         extraData={currentIndex}
         showsHorizontalScrollIndicator={false}
         onScrollToIndexFailed={(error) => console.log(error)} // Gestion des erreurs
@@ -50,18 +46,15 @@ const ImageSlider = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: "center",
     marginHorizontal: 10,
     borderRadius: 15,
     overflow: "hidden",
   },
   image: {
     width,
-    height: 200, // Ajustez la hauteur de l'image selon vos besoins
-    marginVertical: 10,
+    height: 200, 
     overflow: "hidden",
     borderRadius: 15,
   },

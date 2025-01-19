@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
     image: {
-        aspectRatio: 1,
-        resizeMode: "cover"
+        width: "100%",
+        height: "100%"
     },
     details: {
         padding: SIZES.small

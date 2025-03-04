@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text } from 'react-native';
+import styles from './profile.style';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants';
 const Profile = () => {
   return (
-    <SafeAreaView>
-      <Text>Profile</Text>
-    </SafeAreaView>
+    <View style={styles.profileContainer}>
+      <View style={styles.imageProfile}>
+        <Ionicons 
+          name='person'
+          color={COLORS.gray2}
+          size={50}
+        />
+      </View>
+        <Text style={styles.profileName}>Mon Profile</Text>
+    </View>
   );
 }
 
 export default Profile;
-
-const styles = StyleSheet.create({})

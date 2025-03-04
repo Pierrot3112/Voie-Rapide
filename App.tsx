@@ -4,8 +4,9 @@ import { StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
-import BottomTabNavigation from './navigation/BottomTabNavigation'; // Votre navigation de menu
-import { Cart, ProductDetails } from './screens'; // Si vous avez un écran supplémentaire comme "Cart", vous pouvez le gérer ici
+import BottomTabNavigation from './navigation/BottomTabNavigation'; 
+import { Cart, ProductDetails } from './screens'; 
+import NewRivals from './screens/NewRivals';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +27,7 @@ export default function App() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return null; // Affiche rien si les polices ne sont pas encore chargées
+    return null; 
   }
 
   return (
@@ -36,19 +37,25 @@ export default function App() {
         <Stack.Screen
           name="Bottom Navigation"
           component={BottomTabNavigation}
-          options={{ headerShown: false }} // Masquer l'en-tête ici aussi
+          options={{ headerShown: false }} 
         />
 
         <Stack.Screen
           name="Cart"
           component={Cart}
-          options={{ headerShown: false }} // Masquer l'en-tête du "Cart"
+          options={{ headerShown: false }}
         />
 
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
-          options={{ headerShown: false }} // Masquer l'en-tête du "Cart"
+          options={{ headerShown: false }} 
+        />
+
+        <Stack.Screen
+          name="ProductList"
+          component={NewRivals}
+          options={{ headerShown: false }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

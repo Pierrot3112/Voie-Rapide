@@ -8,6 +8,7 @@ import HomeClient from '../../../components/Home.client'; // Assurez-vous que le
 import AccountClient from '../../../components/Account.client'; // Assurez-vous que le chemin est correct
 import { useAuth } from '../../context/AuthContext'; // Importez useAuth pour gérer la déconnexion
 import ItinerairesResults from './ItinerairesResults';
+import DetailsItinerairesResults from './ItinerairesResults';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -59,6 +60,9 @@ const BottomTabNavigation = () => {
                 }}
             />
 
+
+            <Stack.Screen name="ItinerairesResults" component={ItinerairesResults} options={{ headerShown: false }} />
+            <Stack.Screen name="DetailsItinerairesResults" component={DetailsItinerairesResults} options={{ headerShown: false }} />
             <Tab.Screen
                 name="Quitter"
                 component={HomeClient} // Vous pouvez mettre n'importe quel composant ici, car il ne sera pas utilisé

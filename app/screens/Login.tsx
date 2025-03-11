@@ -35,7 +35,11 @@ const Login = () => {
         setLoading(false);
 
         if (result?.error) {
-            Alert.alert("Erreur", result.msg);
+            Toast.show({ 
+                type: 'error',
+                text1: 'Utilisateur inexistant ou mot de passe incorrect',
+                text2: 'Veuillez réesseyer!'
+            })
         } else {
             navigation.navigate("Home"); 
         }

@@ -68,7 +68,7 @@ const ItinerairesResults = () => {
         style={{flex: 1}}
           onPress={() => navigation.goBack()} // Revenir à l'écran précédent (HomeClient)
         >
-          <Ionicons style={styles.backButtonText}  name="arrow-back" size={28} color="white" />
+          <Ionicons  name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
         <Text style={[styles.titlePage, {flex: 3}]}>Itineraires</Text>
       </View>

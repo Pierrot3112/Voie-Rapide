@@ -1,60 +1,49 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Menu, Provider } from 'react-native-paper';
+import { View, Text, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import data from '../../util/credit.json'; // Importez votre fichier JSON
 
+// Définir le type des éléments de crédit
+type CreditItem = {
+  id: number;
+  name: string;
+};
+
 const SelectCredit = () => {
-  const [visible, setVisible] = useState(false); // Contrôle la visibilité du menu
-  const [selectedValue, setSelectedValue] = useState(data[0].id); // Initialisez avec le premier ID
-  const [selectedLabel, setSelectedLabel] = useState(data[0].name); // Initialisez avec le premier nom
+  const [selectedValue, setSelectedValue] = useState(''); // Initialisez avec le premier élément
 
   return (
-    <Provider>
-      <View>
-        {/* Bouton pour ouvrir le menu */}
-        <TouchableOpacity
-          onPress={() => setVisible(true)} // Ouvre le menu
-          style={{
-            padding: 10,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            backgroundColor: '#f0f0f0',
-            borderRadius: 5,
-          }}
-        >
-          <Text>{selectedLabel}</Text> {/* Affiche l'option sélectionnée */}
-        </TouchableOpacity>
-
-        {/* Menu déroulant */}
-        <Menu
-          visible={visible}
-          onDismiss={() => setVisible(false)} // Ferme le menu
-          anchor={
-            <TouchableOpacity
-              onPress={() => setVisible(true)}
-              style={{ opacity: 0 }} // Ancre invisible
-            >
-              <Text>{selectedLabel}</Text>
-            </TouchableOpacity>
-          }
-          contentStyle={{ backgroundColor: 'white', marginTop: 10 }} // Style du menu
-        >
-          {data.map((item) => (
-            <Menu.Item
-              key={item.id}
-              onPress={() => {
-                setSelectedValue(item.id); // Met à jour la valeur sélectionnée
-                setSelectedLabel(item.name); // Met à jour le texte affiché
-                setVisible(false); // Ferme le menu
-              }}
-              title={item.name} // Affiche le nom de l'option
-              titleStyle={{ color: 'black' }} // Style du texte des options
-            />
-          ))}
-        </Menu>
-      </View>
-    </Provider>
+    <View style={styles.container}>
+      <Picker
+        selectedValue={selectedValue}
+        onValueChange={(itemValue) => setSelectedValue(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Choix de crédit" value="null" />
+        <Picker.Item label="5 crédits: 5 000 Ar" value="5" />
+        <Picker.Item label="12 crédits: 10 000 Ar" value="12" />
+        <Picker.Item label="30 crédits: 25 000 Ar" value="option3" />
+      </Picker>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+});
 
 export default SelectCredit;

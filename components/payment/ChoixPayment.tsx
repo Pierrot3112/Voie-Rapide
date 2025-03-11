@@ -33,29 +33,28 @@ const ChoixPayment = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
   imageContainer: {
-    borderWidth: 2, 
-    borderColor: 'transparent', 
-    borderRadius: 10, 
-    padding: 'auto',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 10,
+    padding: 10,
     height: 75,
     width: 75,
     overflow: 'hidden',
-    backgroundColor: COLORS.primary
+    backgroundColor: COLORS.primary,
   },
   selected: {
-    borderColor: 'blue', 
+    borderColor: COLORS.black, // Couleur de la bordure pour l'option sélectionnée
   },
   image: {
-    width: 70, 
-    height: 70, 
-    resizeMode: 'contain', 
-    borderRadius: 10, 
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
 

@@ -11,7 +11,7 @@ import Splash from './app/screens/Splash';
 import HomeUser from './app/screens/HomeUser';
 import HomeClient from './app/screens/HomeClient';
 import ItinerairesResults from './app/navigation/client/ItinerairesResults';
-import DetailsItinerairesResults from 'app/navigation/client/DetailsItinerairesResults';
+import DetailsItinerairesResults from './app/navigation/client/DetailsItinerairesResults';
 
 const Stack = createNativeStackNavigator();
 

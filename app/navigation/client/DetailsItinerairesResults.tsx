@@ -5,11 +5,14 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/fr';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../../config/AxioConfig'; // Remplacez ApiService par AxiosConfig
+import { Ionicons } from '@expo/vector-icons';
 
 // Définir le type des paramètres de navigation
 type DetailsItinerairesChoisiParams = {
@@ -89,12 +92,17 @@ const DetailItineraireScreen = ({ route }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Remplacement de l'AppBar */}
       <View style={styles.appBar}>
-        <Text style={styles.appBarTitle}>Itinéraires</Text>
+           <TouchableOpacity
+              style={{flex: 1}}
+              onPress={() => navigation.goBack()} // Revenir à l'écran précédent (HomeClient)
+            >
+              <Ionicons name="arrow-back" size={28} color="white" />
+            </TouchableOpacity>
+        <Text style={[styles.appBarTitle, {flex: 3}]}>Itinéraires</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.content}>
         {/* Bloc d'informations de l'itinéraire */}
         <View style={styles.itineraireContainer}>
           <Text style={styles.itineraireText}>Départ : {itineraireDetails?.depart_nom}</Text>
@@ -104,13 +112,14 @@ const DetailItineraireScreen = ({ route }) => {
             Temps : {Number(itineraireDetails?.somme_duree_trajection).toFixed(0)} min
           </Text>
         </View>
+      <ScrollView contentContainerStyle={styles.content}>
 
         {/* Liste des connexions */}
         {itineraireDetails?.connections?.map((connection, index) => (
           <View key={index} style={styles.connectionContainer}>
             <View style={styles.connectionHeader}>
               {/* Icône de localisation (ici remplacée par un emoji) */}
-              <Text style={styles.locationIcon}>📍</Text>
+              <Ionicons name='location-sharp' size={28} color="white" />
               <View style={styles.locationBadge}>
                 <Text style={styles.locationBadgeText}>{connection.point_depart_nom}</Text>
               </View>
@@ -141,14 +150,14 @@ const DetailItineraireScreen = ({ route }) => {
         {/* Dernier point avec le nom de l'arrivée */}
         <View style={styles.connectionContainer}>
           <View style={styles.connectionHeader}>
-            <Text style={styles.locationIcon}>📍</Text>
+            <Ionicons name='location-sharp' size={24} color="white" />
             <View style={styles.locationBadge}>
               <Text style={styles.locationBadgeText}>{itineraireDetails?.arrivee_nom}</Text>
             </View>
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -156,14 +165,21 @@ export default DetailItineraireScreen;
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 30,
     flex: 1,
     backgroundColor: '#fff',
+    backgroundColor: 'blue',
   },
   appBar: {
-    height: 56,
-    backgroundColor: '#6200EE',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
+    display: 'flex',
+    flexDirection: "row",
+    marginBottom: 16,
+    padding: 'auto',
+    backgroundColor: '#000000af',
+    borderRadius: 20,
+    alignItems: 'center',
+    height: 30,
+    marginHorizontal: 12
   },
   appBarTitle: {
     color: 'white',
@@ -179,6 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
+    marginHorizontal: 20,
   },
   itineraireText: {
     fontSize: 14,
@@ -210,8 +227,10 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   connectionDetails: {
+    marginLeft: 13,
     borderLeftWidth: 5,
     padding: 8,
+    paddingLeft: 30,
     height: 150,
     justifyContent: 'center',
   },
@@ -219,6 +238,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
     marginBottom: 5,
+    fontWeight: 'bold', 
+    fontSize: 16
   },
   centered: {
     flex: 1,

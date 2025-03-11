@@ -1,4 +1,4 @@
-import { COLORS, SIZES, SHADOWS } from "./theme";
+import { COLORS, SIZES } from "./theme";
 
 
-export { COLORS, SIZES, SHADOWS};
+export { COLORS, SIZES };

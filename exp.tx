@@ -1,0 +1,23 @@
+// App.tsx
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Splash from './screens/Splash';
+import Login from './screens/Login';
+import User from './screens/User';
+
+const Stack = createStackNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen name="Splash" component={Splash} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="User" component={User} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;

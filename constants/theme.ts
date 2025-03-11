@@ -3,9 +3,11 @@ const { height, width } = Dimensions.get('window');
 
 
 const COLORS = {
-    primary: "#2A4D50",
-    secondary: "#DDF0FF",
-    tertiary: "#FF7754",
+    primary: "#F2F2F7",
+    secondary: "#007AFF",
+    tertiary: "#1c1c1e",
+
+    bgBlue: "#015599",
 
     gray: "#83829A",
     gray2: "#C1C0C8",
@@ -13,8 +15,8 @@ const COLORS = {
     offwhite: "#F3F4F8",
     white: "#FFFFFF",
     black: "#000000",
-    red: "#e81e4d",
-    green: "#00C135",
+    red: "#FF3B30",
+    green: "#34C759",
     lightWhite: "#FAFAFC",
 };
 
@@ -30,29 +32,4 @@ const SIZES = {
     width
 };
 
-
-const SHADOWS = {
-    small: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2
-    },
-    
-    medium: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2
-    }, 
-}
-
-export { COLORS, SIZES, SHADOWS };
+export { COLORS, SIZES };

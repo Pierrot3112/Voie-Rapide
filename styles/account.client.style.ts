@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   creditContainer: {
     display: 'flex',
-    gap: 20,
+    gap: 5,
     alignItems: 'center',
     justifyContent: 'center',
     height: SIZES.height / 5,
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   },
   paymentContainer: {
     marginTop: SIZES.medium,
-    padding: SIZES.xLarge,
     backgroundColor: COLORS.green,
     height: SIZES.height / 2.5,
     width: SIZES.width - 30,

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, Image } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import styles from '../../styles/splash.style';
 import { checkToken, getRole } from '../context/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
 
 
 type RootStackParamList = {
@@ -23,6 +24,7 @@ interface SplashProps {
 const Splash: React.FC<SplashProps> = ({ navigation }) => {
     const text1Position = useSharedValue(-200);
     const text2Position = useSharedValue(200);
+    const loaderOpacity = useSharedValue(0);
 
     useEffect(() => {
         text1Position.value = withTiming(0, { duration: 1000 });
@@ -49,7 +51,7 @@ const Splash: React.FC<SplashProps> = ({ navigation }) => {
               if (role === 'client') {
                 navigation.navigate('HomeClient');
               } else {
-                navigation.navigate('HomeUser');
+                navigation.navigate('Login');
               }
             } else {
               navigation.navigate('Login');
@@ -59,6 +61,7 @@ const Splash: React.FC<SplashProps> = ({ navigation }) => {
         checkAuth();
     }, [navigation]);
 
+  
     const animatedText1Style = useAnimatedStyle(() => ({
         transform: [{ translateX: text1Position.value }]
     }));
@@ -67,10 +70,24 @@ const Splash: React.FC<SplashProps> = ({ navigation }) => {
         transform: [{ translateX: text2Position.value }]
     }));
 
+    const loaderStyle = useAnimatedStyle(() => ({
+        opacity: loaderOpacity.value,
+    }));
+
     return (
         <SafeAreaView style={styles.home}>
             <View style={styles.container}>
                 <Animated.Text style={[styles.text, animatedText1Style]}>Voie Rapide</Animated.Text>
+                <View style={styles.imageContainer}>
+                    <Image source={require('../../assets/icon.png')} style={styles.logo} />
+                </View>
+
+                {/* Loader avec trois points animés */}
+                <Animated.View style={[styles.loaderContainer, loaderStyle]}>
+                    <Ionicons name='radio-button-off-outline' style={styles.loaderText} />
+                    <Ionicons name='radio-button-off-outline' style={styles.loaderText} />
+                    <Ionicons name='radio-button-off-outline' style={styles.loaderText} />
+                </Animated.View>
                 <Animated.Text style={[styles.text, animatedText2Style]}>Tongasoa !</Animated.Text>
             </View>
         </SafeAreaView>

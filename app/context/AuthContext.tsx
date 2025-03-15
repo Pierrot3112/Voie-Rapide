@@ -7,12 +7,12 @@ const TOKEN_KEY = "token";
 interface AuthState {
     token: string | null;
     authenticated: boolean;
-    role: string | null;
 }
 
 interface AuthContextProps {
     authState: AuthState;
     onLogin: (num_tel: string, password: string) => Promise<{ error?: boolean; msg?: string }>;
+    onRegister: (nom: string, num_tel: string, password: string) => Promise<{ error?: boolean; msg?: string }>;
     onLogout: () => void;
     checkToken: () => Promise<string | null>;
     getRole: (token: string) => Promise<string>;
@@ -33,17 +33,16 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [authState, setAuthState] = useState<AuthState>({ token: null, authenticated: false, role: null });
+    const [authState, setAuthState] = useState<AuthState>({ token: null, authenticated: false });
 
     useEffect(() => {
         const loadToken = async () => {
             try {
                 const token = await checkToken();
                 if (token) {
-                    const role = await getRole(token);
-                    setAuthState({ token, authenticated: true, role });
+                    setAuthState({ token, authenticated: true});
                 } else {
-                    setAuthState({ token: null, authenticated: false, role: null });
+                    setAuthState({ token: null, authenticated: false });
                 }
             } catch (error) {
                 console.error("❌ Erreur lors du chargement du token :", error);
@@ -56,29 +55,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const response = await api.post("/token", { num_tel, password });
             const token = response.data.access_token;
-            const role = await getRole(token);
 
             await AsyncStorage.setItem(TOKEN_KEY, token);
-
-            setAuthState({ token, authenticated: true, role });
+            setAuthState({ token, authenticated: true });
 
             return { error: false, msg: "Connexion réussie" };
-        } catch (error) {
+        } catch (error: any) {
             return { error: true, msg: error.response?.data?.msg || "Échec de la connexion" };
         }
     };
 
-    const logout = async () => {
+    const register = async (nom: string, num_tel: string, password: string ) => {
         try {
-            await AsyncStorage.removeItem(TOKEN_KEY);
-            setAuthState({ token: null, authenticated: false, role: null });
-        } catch (error) {
-            console.error("❌ Erreur lors de la déconnexion :", error);
+            const response = await api.post("/signup", { nom, num_tel, password });
+    
+            return { error: false, msg: "Inscription réussie" };
+
+        } catch (error: any) {
+            console.error("❌ Erreur API:", error.response?.data);
+            return { error: true, msg: error.response?.data?.msg || "Échec de l'inscription" };
         }
     };
 
+    const logout = async () => {
+        await AsyncStorage.removeItem(TOKEN_KEY);
+        setAuthState({ token: null, authenticated: false });
+    };
+
+
+
     return (
-        <AuthContext.Provider value={{ authState, onLogin: login, onLogout: logout, checkToken, getRole }}>
+        <AuthContext.Provider
+            value={{
+                authState,
+                onLogin: login,
+                onRegister: register,
+                onLogout: logout,
+                checkToken,
+                getRole
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
@@ -86,8 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 export const checkToken = async (): Promise<string | null> => {
     try {
-        const token = await AsyncStorage.getItem(TOKEN_KEY);
-        return token;
+        return await AsyncStorage.getItem(TOKEN_KEY);
     } catch (error) {
         console.error("❌ Erreur lors de la vérification du token :", error);
         return null;
@@ -97,9 +112,7 @@ export const checkToken = async (): Promise<string | null> => {
 export const getRole = async (token: string): Promise<string> => {
     try {
         const response = await api.get("/me", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         });
         return response.data.role;
     } catch (error) {

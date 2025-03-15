@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { TextInput, TouchableOpacity, SafeAreaView, ImageBackground, Text, ActivityIndicator, Modal, View } from 'react-native';
+import { TextInput, TouchableOpacity, ImageBackground, Text, ActivityIndicator, Modal, View, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import styles from '../../styles/Login.style';
+import styles from '../../styles/register.style';
 import useNetworkStatus from '../../components/NetworkStatus/NetworkStatus';
 import Toast from 'react-native-toast-message';
 import Condition from '../../components/Modal';
+import PullToRefresh from '../../components/PullToRefresh';
+import { ScrollView } from 'react-native';
 
 const Register = () => {
     const [nom, setNom] = useState('');
@@ -14,6 +16,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [acceptTerms, setAcceptTerms] = useState(false);
+    const [showCheckboxError, setShowCheckboxError] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [secureText, setSecureText] = useState(true);
     const [secureTextConfirm, setSecureTextConfirm] = useState(true);
@@ -26,90 +29,128 @@ const Register = () => {
     const malagasyPhoneRegex = /^(?:\+261|0)(32|33|34|38|39)\d{7}$/;
 
     const handleRegister = async () => {
-        if (!isOnline) {
-            Toast.show({ type: 'error', text1: 'Pas de connexion', text2: 'Veuillez vérifier votre connexion internet.' });
+        if (password !== confirmPassword) {
+            Alert.alert('Erreur', "Les mots de passe ne correspondent pas");
             return;
         }
 
         if (!malagasyPhoneRegex.test(num_tel)) {
-            Toast.show({ type: 'error', text1: 'Numéro invalide', text2: 'Ex: 0341234567 ou +261341234567' });
+            Alert.alert('Erreur', "Numéro de téléphone invalide");
             return;
         }
 
-        if (password !== confirmPassword) {
-            Toast.show({ type: 'error', text1: 'Erreur', text2: 'Les mots de passe ne correspondent pas.' });
+        if (!acceptTerms) {
+            setShowCheckboxError(true);
+            setTimeout(() => setShowCheckboxError(false), 1000);
             return;
         }
 
         setLoading(true);
-        const result = await onRegister(nom, num_tel, password);
-        setLoading(false);
 
-        if (result?.error) {
-            Toast.show({ type: 'error', text1: 'Erreur', text2: result.msg });
-        } else {
-            Toast.show({ type: 'success', text1: 'Inscription réussie', text2: 'Bienvenue ! Vous pouvez maintenant vous connecter.' });
-            navigation.navigate("Login");
+        try {
+            const response = await onRegister(nom, num_tel, password);
+            if (response.error) {
+                Alert.alert('Erreur', response.msg);
+            } else {
+                console.log(response.msg);
+                Toast.show({
+                    type: 'success',
+                    text1: response.msg,
+                });
+
+                navigation.navigate('CodeOTP', { phoneNumber: num_tel });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: "Erreur lors de l'inscription",
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
+    const handleRefresh = async () => {
+        setNom('');
+        setNumTel('');
+        setPassword('');
+        setConfirmPassword('');
+        setAcceptTerms(false)
+    };
+
     return (
-        <SafeAreaView>
-            <View style={styles.container}>
-                <ImageBackground source={require('../../assets/images/city.jpg')} style={styles.head}>
-                    <View style={styles.headContent}></View>
-                </ImageBackground>
-                <View style={styles.form}>
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Votre nom*"
-                        onChangeText={setNom}
-                        value={nom}
-                    />
-                    <TextInput
-                        style={styles.inputText}
-                        placeholder="Numéro de téléphone *"
-                        onChangeText={setNumTel}
-                        value={num_tel}
-                        keyboardType="phone-pad"
-                    />
-                    <View style={styles.inputPassword}>
+        <PullToRefresh onRefresh={handleRefresh}>
+            <ScrollView>
+                <View style={styles.container}>
+                    <ImageBackground source={require('../../assets/images/city.jpg')} style={styles.head}>
+                        <View style={styles.headContent} />
+                    </ImageBackground>
+                    <View style={[styles.form, { gap: 20 }]}>
+                        <View style={styles.loginTitle}>
+                            <Text style={styles.textLog1}>Salut!!!</Text>
+                            <Text style={styles.textLog2}>Inscription</Text>
+                            <ImageBackground source={require('../../assets/images/logoVoieRapide.png')} style={styles.logo} />
+                        </View>
                         <TextInput
-                            style={styles.input}
-                            placeholder="Mot de passe"
-                            secureTextEntry={secureText}
-                            onChangeText={setPassword}
-                            value={password}
+                            style={styles.inputText}
+                            placeholder="Votre nom*"
+                            onChangeText={setNom}
+                            value={nom}
                         />
-                        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-                            <Ionicons name={secureText ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.inputPassword}>
                         <TextInput
-                            style={styles.input}
-                            placeholder="Confirmer le mot de passe"
-                            secureTextEntry={secureTextConfirm}
-                            onChangeText={setConfirmPassword}
-                            value={confirmPassword}
+                            style={styles.inputText}
+                            placeholder="Numéro de téléphone *"
+                            onChangeText={setNumTel}
+                            value={num_tel}
+                            keyboardType="phone-pad"
                         />
-                        <TouchableOpacity onPress={() => setSecureTextConfirm(!secureTextConfirm)}>
-                            <Ionicons name={secureTextConfirm ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
+                        <View style={styles.inputPassword}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Mot de passe"
+                                secureTextEntry={secureText}
+                                onChangeText={setPassword}
+                                value={password}
+                            />
+                            <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+                                <Ionicons name={secureText ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.inputPassword}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Confirmer le mot de passe"
+                                secureTextEntry={secureTextConfirm}
+                                onChangeText={setConfirmPassword}
+                                value={confirmPassword}
+                            />
+                            <TouchableOpacity onPress={() => setSecureTextConfirm(!secureTextConfirm)}>
+                                <Ionicons name={secureTextConfirm ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.btnSubmit} onPress={handleRegister} disabled={loading}>
+                            <Text style={styles.btnSubmitText}>S'inscrire</Text>
                         </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={styles.btnSubmit} onPress={handleRegister} disabled={loading}>
-                        <Text style={styles.btnSubmitText}>S'inscrire</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                        <Text style={{ textAlign: 'center', marginTop: 10 }}>Se connecter si vous avez déjà un compte</Text>
-                    </TouchableOpacity>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => setAcceptTerms(!acceptTerms)}>
-                            <Ionicons name={acceptTerms ? "checkbox-outline" : "square-outline"} size={24} color="gray" />
+                        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                            <Text style={{ textAlign: 'center', marginTop: 10 }}>Se connecter si vous avez déjà un compte</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginLeft: 10 }}>
-                            J'accepte les <Text style={{ color: 'blue' }} onPress={() => setModalVisible(true)}>conditions d'utilisation</Text>
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={() => setAcceptTerms(!acceptTerms)}>
+                                <Ionicons 
+                                    name={acceptTerms ? "checkbox-outline" : "square-outline"} 
+                                    size={24} 
+                                    color={showCheckboxError ? "red" : "gray"} 
+                                />
+                            </TouchableOpacity>
+                            <Text style={{ marginLeft: 10 }}>
+                                J'accepte les <Text style={{ color: 'blue' }} onPress={() => setModalVisible(true)}>conditions d'utilisation</Text>
+                            </Text>
+                        </View>
+                        {showCheckboxError && (
+                            <Text style={{ color: 'red', marginTop: 5 }}>
+                                Vous devez accepter les conditions d'utilisation
+                            </Text>
+                        )}
                     </View>
                     {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
                     <Modal
@@ -128,8 +169,8 @@ const Register = () => {
                         </View>
                     </Modal>
                 </View>
-            </View>
-        </SafeAreaView>
+            </ScrollView>
+        </PullToRefresh>
     );
 };
 

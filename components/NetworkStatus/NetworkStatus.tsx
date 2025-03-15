@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
+import * as Permissions from 'expo'; 
+
 
 const NetworkStatus = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false); // Toujours un `boolean`

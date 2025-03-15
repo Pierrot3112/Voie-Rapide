@@ -1,33 +1,41 @@
 import { COLORS } from '../../constants';
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import PullToRefresh from '../../components/PullToRefresh';
+import * as Permissions from 'expo'; 
+
 
 const ChoixPayment = () => {
-  // État pour stocker l'ID de l'option sélectionnée
   const [selectedId, setSelectedId] = useState(null);
 
-  // Données des images (remplacez par vos propres images)
   const options = [
     { id: 1, image: require('../../assets/images/mvola.png') },
     { id: 2, image: require('../../assets/images/orangeMoney.png') },
     { id: 3, image: require('../../assets/images/airtelMoney.png') },
   ];
 
+  const handleRefresh = async () => {
+    // Logique de rafraîchissement ici
+    console.log("Refreshing ChoixPayment page...");
+  };
+
   return (
-    <View style={styles.container}>
-      {options.map((option) => (
-        <TouchableOpacity
-          key={option.id}
-          onPress={() => setSelectedId(option.id)} // Mettre à jour l'état avec l'ID sélectionné
-          style={[
-            styles.imageContainer,
-            selectedId === option.id && styles.selected, // Appliquer un style si l'option est sélectionnée
-          ]}
-        >
-          <Image source={option.image} style={styles.image} />
-        </TouchableOpacity>
-      ))}
-    </View>
+    <PullToRefresh onRefresh={handleRefresh}>
+      <View style={styles.container}>
+        {options.map((option) => (
+          <TouchableOpacity
+            key={option.id}
+            onPress={() => setSelectedId(option.id)}
+            style={[
+              styles.imageContainer,
+              selectedId === option.id && styles.selected,
+            ]}
+          >
+            <Image source={option.image} style={styles.image} />
+          </TouchableOpacity>
+        ))}
+      </View>
+    </PullToRefresh>
   );
 };
 
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   selected: {
-    borderColor: COLORS.black, // Couleur de la bordure pour l'option sélectionnée
+    borderColor: COLORS.black,
   },
   image: {
     width: '100%',

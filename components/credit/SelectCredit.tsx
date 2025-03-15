@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import data from '../../util/credit.json'; // Importez votre fichier JSON
 
 // Définir le type des éléments de crédit
 type CreditItem = {
@@ -10,7 +9,7 @@ type CreditItem = {
 };
 
 const SelectCredit = () => {
-  const [selectedValue, setSelectedValue] = useState(''); // Initialisez avec le premier élément
+  const [selectedValue, setSelectedValue] = useState(''); 
 
   return (
     <View style={styles.container}>

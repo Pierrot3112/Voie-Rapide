@@ -2,7 +2,8 @@
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext'; // Assurez-vous que le chemin est correct
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Alert, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const Home = () => {
     const { authState, getRole } = useAuth();
@@ -14,16 +15,20 @@ const Home = () => {
                 try {
                     const role = await getRole(authState.token);
                     if (role === 'client') {
-                        navigation.navigate('HomeClient'); // Redirige vers le tableau de bord admin
+                        navigation.navigate('HomeClient'); 
                     } else {
-                        navigation.navigate('HomeUser'); // Redirige vers le tableau de bord utilisateur
+                        Toast.show({
+                            type: "error",
+                            text1: "Erreur d'authentification",
+                            text2: "Votre compte n\'est pas un client. Réessayez à nouveau.",
+                        });
+                        navigation.navigate('Login'); 
                     } 
                 } catch (error) {
-                    console.error("❌ Erreur lors de la récupération du rôle :", error);
-                    navigation.navigate('Login'); // Redirige vers la page de connexion en cas d'erreur
+                    navigation.navigate('Login'); 
                 }
             } else {
-                navigation.navigate('Login'); // Redirige vers la page de connexion si aucun token n'est trouvé
+                navigation.navigate('Login'); 
             }
         };
 

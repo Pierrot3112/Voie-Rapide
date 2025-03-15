@@ -8,10 +8,13 @@ import Home from './app/screens/Home';
 import Login from './app/screens/Login';
 import Register from './app/screens/Register';
 import Splash from './app/screens/Splash';
-import HomeUser from './app/screens/HomeUser';
 import HomeClient from './app/screens/HomeClient';
 import ItinerairesResults from './app/navigation/client/ItinerairesResults';
 import DetailsItinerairesResults from './app/navigation/client/DetailsItinerairesResults';
+import ValidCodeOtp from './app/screens/ValidCodeOtp';
+import ForgotPassword from 'app/screens/ForgotPassword';
+import * as Permissions from 'expo'; // 
+
 
 const Stack = createNativeStackNavigator();
 
@@ -49,9 +52,11 @@ export const Layout = () => {
                 <Stack.Navigator initialRouteName="Splash">
                     <Stack.Screen options={{ headerShown: false }} name="Splash" component={Splash} />
                     <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-                    <Stack.Screen options={{ headerShown: false }} name="HomeUser" component={HomeUser} />
+                    <Stack.Screen options={{ headerShown: false }} name="ForgotPassWord" component={ForgotPassword} />
+                    <Stack.Screen options={{ headerShown: false }} name="Register" component={Register} />
+                    <Stack.Screen options={{ headerShown: false }}  name="CodeOTP" component={ValidCodeOtp} />
                     <Stack.Screen options={{ headerShown: false }} name="HomeClient" component={HomeClient} />
-                    <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen options={{ headerShown: false }}  name="Home" component={Home} />
                     <Stack.Screen name="ItinerairesResults" component={ItinerairesResults} options={{ headerShown: false }} />
                     <Stack.Screen name="DetailsItinerairesResults" component={DetailsItinerairesResults} options={{ headerShown: false }} />
                 </Stack.Navigator>

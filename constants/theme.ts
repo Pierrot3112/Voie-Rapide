@@ -7,7 +7,7 @@ const COLORS = {
     secondary: "#007AFF",
     tertiary: "#1c1c1e",
 
-    bgBlue: "#015599",
+    bgBlue: "#0303AC",
 
     gray: "#83829A",
     gray2: "#C1C0C8",

@@ -6,6 +6,7 @@ interface Styles {
     input: ViewStyle;
     btn: ViewStyle;
     marginTop: ViewStyle;
+    suggestionItem: ViewStyle;
 }
 
 const styles = StyleSheet.create({
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
 
     suggestionContainer: {
         position: 'absolute',
-        top: 50, 
+        top: 75, 
         left: 0,
         right: 0,
         backgroundColor: 'white',
@@ -50,6 +51,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
+        padding: 20,
+        gap: 20,
+    },
+
+    suggestionItem:{
+      marginBottom: 10,
     },
 
     pickerContainer: {

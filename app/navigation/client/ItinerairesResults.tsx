@@ -23,6 +23,7 @@ type ItineraireResult = {
   itineraires_id: number;
   somme_duree_trajection: number;
   connections: any[]; 
+  en_passant: string,
 };
 
 
@@ -30,8 +31,8 @@ type ItineraireResult = {
 const ItinerairesResults = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { departureId, arrivalId, selectedValue } = route.params as ItinerairesResultsParams; // Appliquer le type
-  const [results, setResults] = useState<ItineraireResult[]>([]); // Typage explicite
+  const { departureId, arrivalId, selectedValue } = route.params as ItinerairesResultsParams; 
+  const [results, setResults] = useState<ItineraireResult[]>([]); 
   const [loading, setLoading] = useState(true);
 
   // Fonction pour faire l'appel à l'API
@@ -42,11 +43,9 @@ const ItinerairesResults = () => {
         id_arrive: arrivalId,
         type_rec: selectedValue,
       });
-      console.log('Réponse de l\'API:', response.data); // Ajouter un log pour vérifier la réponse
       setResults(response.data);
     } catch (error) {
-      console.error('Erreur lors de la récupération des résultats:', error);
-      Alert.alert('Erreur', 'Une erreur s\'est produite lors de la récupération des résultats');
+      Alert.alert('Infos', 'Auccun itineraires trouvé!');
     } finally {
       setLoading(false);
     }
@@ -66,7 +65,7 @@ const ItinerairesResults = () => {
       <View style={styles.backButton}>
         <TouchableOpacity
         style={{flex: 1}}
-          onPress={() => navigation.goBack()} // Revenir à l'écran précédent (HomeClient)
+          onPress={() => navigation.goBack()}
         >
           <Ionicons  name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
@@ -96,12 +95,11 @@ const ItinerairesResults = () => {
             >
               <Ionicons name='car' style={{flex: 1}} size={30} color={COLORS.bgBlue} />
               <View style={{flex: 4}}>
-                <Text style={styles.title}>Itinéraire ID: {item.itineraires_id}</Text>
+                <Text style={styles.title}>En passant : {item.en_passant}</Text>
                 <Text style={styles.distance}>Distance: {item.distance} km</Text>
                 <Text style={styles.duration}>Durée: {item.somme_duree_trajection} min</Text>
-                <Text style={styles.connections}>Connections: {item.connections.length}</Text>
               </View>
-              <Ionicons name="arrow-forward" style={{flex: 1}} size={30} />
+              <Ionicons name="arrow-forward" style={{flex: 1, paddingLeft:10, textAlign: 'right'}} size={30} />
             </TouchableOpacity>
             ))}
           </ScrollView>
@@ -137,6 +135,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    paddingTop: 1,
   },
   item: {
     display: 'flex',
@@ -150,8 +149,15 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
+    textAlign: 'left',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: COLORS.green,
+    borderRadius: 10,
+    marginBottom: 3,
+    color: COLORS.primary,
   },
   distance: {
     fontSize: 14,

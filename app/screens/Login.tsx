@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, SafeAreaView, ImageBackground, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, TextInput, TouchableOpacity, ImageBackground, Text, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import styles from '../../styles/Login.style';
 import useNetworkStatus from '../../components/NetworkStatus/NetworkStatus';
-import Toast from 'react-native-toast-message';
-
+import PullToRefresh from '../../components/PullToRefresh';
 
 const Login = () => {
     const [num_tel, setNumTel] = useState('');
@@ -21,12 +20,10 @@ const Login = () => {
 
     const login = async () => {
         if (!num_tel || !password) {
-            Toast.show({ 
-                type: 'error',
-                text1: 'Utilisateur inexistant ou mot de passe incorrect',
-                text2: 'Veuillez réesseyer!'
-            })
-            Alert.alert('Erreur', 'Tous les champs sont obligatoires');
+            Alert.alert(
+                "Champs obligatoires",
+                "Tous les champs sont obligatoires. Veuillez réessayer."
+            );
             return;
         }
 
@@ -35,21 +32,32 @@ const Login = () => {
         setLoading(false);
 
         if (result?.error) {
-            Toast.show({ 
-                type: 'error',
-                text1: 'Utilisateur inexistant ou mot de passe incorrect',
-                text2: 'Veuillez réesseyer!'
-            })
+            Alert.alert(
+                "Erreur de connexion",
+                "Utilisateur inexistant ou mot de passe incorrect. Veuillez réessayer."
+            );
         } else {
             navigation.navigate("Home"); 
         }
     };
 
+    const handleRefresh = async () => {
+        setNumTel('');
+        setPassword('');
+    };
+
     return (
-        <SafeAreaView>
+        <PullToRefresh onRefresh={handleRefresh}>
             <View style={styles.container}>
-                <ImageBackground source={require('../../assets/images/city.jpg')} style={styles.head} />
+                <ImageBackground source={require('../../assets/images/city.jpg')} style={styles.head}>
+                    <View style={styles.headContent}></View>
+                </ImageBackground>
                 <View style={styles.formLogin}>
+                    <View style={styles.loginTitle}>
+                        <Text style={styles.textLog1}>Bienvenue!!!</Text>
+                        <Text style={styles.textLog2}>Authentification</Text>
+                        <ImageBackground source={require('../../assets/images/logoVoieRapide.png')} style={styles.logo} />
+                    </View>
                     <TextInput
                         style={styles.inputText}
                         placeholder="Numéro de téléphone"
@@ -69,6 +77,9 @@ const Login = () => {
                             <Ionicons name={secureText ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassWord')} disabled={loading}>
+                        <Text style={styles.forgotPassword}>Mot de passe oublié</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading}>
                         <Text style={styles.btnSubmitText}>Se Connecter</Text>
                     </TouchableOpacity>
@@ -78,7 +89,7 @@ const Login = () => {
                     {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
                 </View>
             </View>
-        </SafeAreaView>
+        </PullToRefresh>
     );
 };
 

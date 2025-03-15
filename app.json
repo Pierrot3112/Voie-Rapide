@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyProject",
-    "slug": "MyProject",
+    "name": "Voie Rapide",
+    "slug": "voie-rapide",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,8 +28,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a270e0eb-5964-425d-8131-1391febc3019"
+        "projectId": "28945896-1f51-4fb6-99e5-6b2a1ad046f2"
       }
-    }
+    },
+    "owner": "pierrot3112"
   }
 }

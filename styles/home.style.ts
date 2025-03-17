@@ -1,38 +1,25 @@
-import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../constants";
 
-interface Styles {
-    global: ViewStyle;
-    clientContainer: ViewStyle;
-    searchContainer: ViewStyle;
-    error: TextStyle;
-    df: ViewStyle;
-    number: TextStyle;
-    idNumber: TextStyle;
-    title: TextStyle;
-}
-
 const styles = StyleSheet.create({
-    global:{
-        position: "relative"
+    global: {
+        flex: 1,
     },
 
     clientContainer: {
-        height: SIZES.height/3,
-        width: SIZES.width,
         backgroundColor: COLORS.bgBlue,
         padding: SIZES.xlarge,
+        justifyContent: 'center',
     },
 
     searchContainer: {
-        width: SIZES.width,
+        width: "100%",
         padding: SIZES.medium,
         backgroundColor: COLORS.primary,
-        borderTopLeftRadius: SIZES.medium*2,
-        borderTopRightRadius: SIZES.medium*2,
+        borderTopLeftRadius: SIZES.medium * 2,
+        borderTopRightRadius: SIZES.medium * 2,
         position: 'absolute',
-        top: SIZES.height/3,
-        zIndex: 1
+        zIndex: 1,
     },
 
     error: { 
@@ -42,38 +29,72 @@ const styles = StyleSheet.create({
     },
 
     df: {
-        display: 'flex',
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexDirection: 'row'
     },
 
     number: {
-        paddingHorizontal: 'auto',
-        paddingVertical: 'auto',
         backgroundColor: COLORS.primary,
         fontWeight: 'bold',
-        fontSize: 28,
+        fontSize: 24,
         textAlign: 'center',
-        borderRadius: SIZES.xxLarge
+        borderRadius: SIZES.xxLarge,
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        minWidth: 60, 
     },
 
     idNumber: {
         color: COLORS.primary,
         fontWeight: 'bold',
-        fontSize: 20,
-        paddingHorizontal: 13,
-        paddingVertical: 25,
+        fontSize: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         backgroundColor: COLORS.black,
-        borderRadius: 20
+        borderRadius: 20,
+        textAlign: 'center',
     },
 
     title: {
         marginBottom: 5,
         fontSize: 18,
         color: COLORS.primary,
-        fontWeight: 'condensedBold'
-    }
-})
+        fontWeight: '600',
+    },
+
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+
+    errorText: {
+        color: 'red',
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+
+    retryButton: {
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+
+    retryButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+});
 
 export default styles;

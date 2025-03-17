@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import api from '../../../config/AxioConfig'; // Importer la config Axios
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../constants';
+import Toast from 'react-native-toast-message';
+
+const { width, height } = Dimensions.get('window');
 
 // Définir le type des paramètres de navigation
 type ItinerairesResultsParams = {
@@ -22,39 +25,45 @@ type ItineraireResult = {
   id_depart: number;
   itineraires_id: number;
   somme_duree_trajection: number;
-  connections: any[]; 
-  en_passant: string,
+  connections: any[];
+  en_passant: string;
 };
-
-
 
 const ItinerairesResults = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { departureId, arrivalId, selectedValue } = route.params as ItinerairesResultsParams; 
-  const [results, setResults] = useState<ItineraireResult[]>([]); 
+  const { departureId, arrivalId, selectedValue } = route.params as ItinerairesResultsParams;
+  const [results, setResults] = useState<ItineraireResult[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fonction pour faire l'appel à l'API
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     try {
       const response = await api.post<ItineraireResult[]>('/get_itineraire', {
         id_depart: departureId,
         id_arrive: arrivalId,
         type_rec: selectedValue,
       });
-      setResults(response.data);
+      if (Array.isArray(response.data)) {
+        setResults(response.data);
+      } else {
+        throw new Error('Invalid data format');
+      }
     } catch (error) {
-      Alert.alert('Infos', 'Auccun itineraires trouvé!');
+      Toast.show({
+        type: 'error',
+        text1: 'Infos',
+        text2: 'Aucun itinéraire trouvé!'
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [departureId, arrivalId, selectedValue]);
 
   // Appeler l'API au chargement du composant
   useEffect(() => {
     fetchResults();
-  }, []);
+  }, [fetchResults]);
 
   // Filtrer les résultats invalides
   const validResults = results.filter((item) => item && item.itineraires_id !== undefined);
@@ -63,13 +72,10 @@ const ItinerairesResults = () => {
     <SafeAreaView style={styles.container}>
       {/* Bouton Retour */}
       <View style={styles.backButton}>
-        <TouchableOpacity
-        style={{flex: 1}}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons  name="arrow-back" size={28} color="white" />
+        <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
-        <Text style={[styles.titlePage, {flex: 3}]}>Itineraires</Text>
+        <Text style={[styles.titlePage, { flex: 3 }]}>Itinéraires</Text>
       </View>
 
       {/* Afficher les résultats */}
@@ -89,18 +95,18 @@ const ItinerairesResults = () => {
           <ScrollView style={styles.scrollView}>
             {validResults.map((item, index) => (
               <TouchableOpacity
-              key={index}
-              style={styles.item}
-              onPress={() => navigation.navigate('DetailsItinerairesResults', { itinerairesId: item.itineraires_id })}
-            >
-              <Ionicons name='car' style={{flex: 1}} size={30} color={COLORS.bgBlue} />
-              <View style={{flex: 4}}>
-                <Text style={styles.title}>En passant : {item.en_passant}</Text>
-                <Text style={styles.distance}>Distance: {item.distance} km</Text>
-                <Text style={styles.duration}>Durée: {item.somme_duree_trajection} min</Text>
-              </View>
-              <Ionicons name="arrow-forward" style={{flex: 1, paddingLeft:10, textAlign: 'right'}} size={30} />
-            </TouchableOpacity>
+                key={index}
+                style={styles.item}
+                onPress={() => navigation.navigate('DetailsItinerairesResults', { itinerairesId: item.itineraires_id })}
+              >
+                <Ionicons name="car" style={styles.icon} size={30} color={COLORS.bgBlue} />
+                <View style={styles.itemContent}>
+                  <Text style={styles.title}>En passant : {item.en_passant}</Text>
+                  <Text style={styles.distance}>Distance: {item.distance} km</Text>
+                  <Text style={styles.duration}>Durée: {item.somme_duree_trajection} min</Text>
+                </View>
+                <Ionicons name="arrow-forward" style={styles.arrowIcon} size={30} />
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </>
@@ -112,16 +118,15 @@ const ItinerairesResults = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: COLORS.gray2
+    paddingHorizontal: '5%',
+    backgroundColor: COLORS.gray2,
   },
   titlePage: {
     textAlign: 'left',
     color: COLORS.primary,
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
-
   block: {
     padding: 16,
     backgroundColor: '#f0f0f0',
@@ -136,28 +141,32 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingTop: 1,
+    paddingBottom: height * 0.5,
+    marginBottom: 70
   },
   item: {
     display: 'flex',
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
     backgroundColor: COLORS.primary,
     marginBottom: 20,
-    borderRadius: 20
-
+    borderRadius: 20,
+  },
+  itemContent: {
+    flex: 4,
+    paddingLeft: 10,
   },
   title: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
-    textAlign: 'left',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
     backgroundColor: COLORS.green,
     borderRadius: 10,
     marginBottom: 3,
     color: COLORS.primary,
+    paddingVertical: 5,
+    paddingLeft: 10,
   },
   distance: {
     fontSize: 14,
@@ -167,32 +176,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  connections: {
-    fontSize: 14,
-    color: '#666',
+  icon: {
+    flex: 1,
+  },
+  arrowIcon: {
+    flex: 1,
+    paddingLeft: 10,
+    textAlign: 'right',
   },
   backButton: {
     display: 'flex',
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 16,
-    padding: 'auto',
+    paddingVertical: 8,
     backgroundColor: '#000000af',
     borderRadius: 20,
     alignItems: 'center',
-    height: 30,
-  },
-  backButtonText: {
-    height: '80%',
-    width: 25,
-    marginLeft: 3,
-    padding: 'auto',
-    display: 'flex',
-    alignItems: "center",
-    justifyContent: 'center',
-    color: COLORS.black,
-    fontSize: 18,
-    backgroundColor: COLORS.primary,
-    borderRadius: 50
+    height: 40,
   },
 });
 

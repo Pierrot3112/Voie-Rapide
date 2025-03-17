@@ -1,14 +1,16 @@
-import { COLORS, SIZES } from "../constants";
-import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { COLORS } from "../constants";
+import { StyleSheet, TextStyle, ViewStyle, Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get('window');
 
 interface Styles {
   global: ViewStyle;
   creditContainer: ViewStyle;
   creditCard: ViewStyle;
   paymentContainer: ViewStyle;
-  paymentTitle: ViewStyle;
+  paymentTitle: TextStyle;
   achatBtn: ViewStyle;
-  textBtn: ViewStyle;
+  textBtn: TextStyle;
   codeContainer: ViewStyle;
   codeInput: ViewStyle;
   validBtn: ViewStyle;
@@ -17,66 +19,64 @@ interface Styles {
 
 const styles = StyleSheet.create({
   global: {
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    paddingTop: height * 0.02,
+    paddingHorizontal: width * 0.03,
     backgroundColor: COLORS.gray,
-    height: SIZES.height,
+    flex: 1,
   },
   creditContainer: {
-    display: 'flex',
-    gap: 5,
+    flexDirection: 'row',
+    gap: width * 0.01,
     alignItems: 'center',
     justifyContent: 'center',
-    height: SIZES.height / 5,
-    width: SIZES.width - 28,
-    flexDirection: 'row',
-    paddingVertical: 20,
+    height: height * 0.2,
+    width: width * 0.95,
+    paddingVertical: height * 0.02,
   },
   creditCard: {
-    padding: 10,
+    padding: width * 0.02,
     height: '90%',
     backgroundColor: COLORS.primary,
     flex: 1,
     borderRadius: 10,
   },
   paymentContainer: {
-    marginTop: SIZES.medium,
+    marginTop: height * 0.02,
     backgroundColor: COLORS.green,
-    height: SIZES.height / 2.5,
-    width: SIZES.width - 30,
+    height: height * 0.4,
+    width: width * 0.95,
     borderRadius: 15,
-    marginHorizontal: 5
+    alignSelf: 'center',
+    paddingBottom: 20
   },
   paymentTitle: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: height * 0.01,
   },
   achatBtn: {
-    textAlign: 'center',
-    paddingHorizontal: 50,
-    paddingVertical: 10,
+    alignSelf: 'center',
+    paddingHorizontal: width * 0.1,
+    paddingVertical: height * 0.015,
     backgroundColor: COLORS.black,
     borderRadius: 20,
     marginTop: 10,
-    marginHorizontal: 20
   },
   textBtn: {
     textAlign: 'center',
     color: COLORS.primary,
-    fontSize: 24,
+    fontSize: width * 0.05,
   },
-
   codeContainer: {
-    height: SIZES.height/4.5,
-    width: SIZES.width-30,
-    marginTop:20,
-    padding: 20,
+    height: height * 0.2,
+    width: width * 0.95,
+    marginTop: height * 0.02,
+    padding: width * 0.05,
     backgroundColor: COLORS.gray2,
-    borderRadius: 10
+    borderRadius: 10,
+    alignSelf: 'center',
   },
-
   codeInput: {
     width: '100%',
     borderWidth: 0,
@@ -84,21 +84,19 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     backgroundColor: COLORS.primary,
   },
-
   validBtn: {
     width: '100%',
-    padding: 15,
+    padding: height * 0.015,
     backgroundColor: COLORS.black,
-    marginTop: 20,
-    borderRadius: 10
+    marginTop: height * 0.02,
+    borderRadius: 10,
   },
-
   textValidBtn: {
-    fontSize: 18,
+    fontSize: width * 0.04,
     color: COLORS.primary,
     fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 export default styles;

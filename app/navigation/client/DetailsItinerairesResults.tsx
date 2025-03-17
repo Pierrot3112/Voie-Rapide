@@ -7,20 +7,21 @@ import {
   ActivityIndicator,
   SafeAreaView,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/fr';
 import { useNavigation } from '@react-navigation/native';
-import api from '../../../config/AxioConfig'; // Remplacez ApiService par AxiosConfig
+import api from '../../../config/AxioConfig';
 import { Ionicons } from '@expo/vector-icons';
 
-// Définir le type des paramètres de navigation
+const { width, height } = Dimensions.get('window');
+
 type DetailsItinerairesChoisiParams = {
   itinerairesId: number;
 };
 
 const DetailItineraireScreen = ({ route }) => {
-  // Récupère l'ID transmis en paramètre de la route
   const { itinerairesId } = route.params as DetailsItinerairesChoisiParams;
   const navigation = useNavigation();
 
@@ -36,7 +37,7 @@ const DetailItineraireScreen = ({ route }) => {
     try {
       const response = await api.get(`/itineraire/${itinerairesId}`);
       setItineraireDetails(response.data);
-      moment.locale('fr'); // Active la locale française pour le formatage des dates
+      moment.locale('fr');
     } catch (error) {
       setErrorMessage(`Erreur lors de la récupération des données : ${error.message}`);
     } finally {
@@ -93,33 +94,25 @@ const DetailItineraireScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Remplacement de l'AppBar */}
       <View style={styles.appBar}>
-           <TouchableOpacity
-              style={{flex: 1}}
-              onPress={() => navigation.goBack()} // Revenir à l'écran précédent (HomeClient)
-            >
-              <Ionicons name="arrow-back" size={28} color="white" />
-            </TouchableOpacity>
-        <Text style={[styles.appBarTitle, {flex: 3}]}>Itinéraires</Text>
+        <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={28} color="white" />
+        </TouchableOpacity>
+        <Text style={[styles.appBarTitle, { flex: 3 }]}>Itinéraires</Text>
       </View>
-        {/* Bloc d'informations de l'itinéraire */}
-        <View style={styles.itineraireContainer}>
-          <Text style={styles.itineraireText}>Départ : {itineraireDetails?.depart_nom}</Text>
-          <Text style={styles.itineraireText}>Arrivée : {itineraireDetails?.arrivee_nom}</Text>
-          <Text style={styles.itineraireText}>Distance : {itineraireDetails?.distance} km</Text>
-          <Text style={styles.itineraireText}>
-            Temps : {Number(itineraireDetails?.somme_duree_trajection).toFixed(0)} min
-          </Text>
-        </View>
+      <View style={styles.itineraireContainer}>
+        <Text style={styles.itineraireText}>Départ : {itineraireDetails?.depart_nom}</Text>
+        <Text style={styles.itineraireText}>Arrivée : {itineraireDetails?.arrivee_nom}</Text>
+        <Text style={styles.itineraireText}>Distance : {itineraireDetails?.distance} km</Text>
+        <Text style={styles.itineraireText}>
+          Temps : {Number(itineraireDetails?.somme_duree_trajection).toFixed(0)} min
+        </Text>
+      </View>
       <ScrollView contentContainerStyle={styles.content}>
-
-        {/* Liste des connexions */}
         {itineraireDetails?.connections?.map((connection, index) => (
           <View key={index} style={styles.connectionContainer}>
             <View style={styles.connectionHeader}>
-              {/* Icône de localisation (ici remplacée par un emoji) */}
-              <Ionicons name='location-sharp' size={28} color="white" />
+              <Ionicons name="location-sharp" size={28} color="white" />
               <View style={styles.locationBadge}>
                 <Text style={styles.locationBadgeText}>{connection.point_depart_nom}</Text>
               </View>
@@ -146,11 +139,9 @@ const DetailItineraireScreen = ({ route }) => {
             </View>
           </View>
         ))}
-
-        {/* Dernier point avec le nom de l'arrivée */}
         <View style={styles.connectionContainer}>
           <View style={styles.connectionHeader}>
-            <Ionicons name='location-sharp' size={24} color="white" />
+            <Ionicons name="location-sharp" size={24} color="white" />
             <View style={styles.locationBadge}>
               <Text style={styles.locationBadgeText}>{itineraireDetails?.arrivee_nom}</Text>
             </View>
@@ -165,81 +156,74 @@ export default DetailItineraireScreen;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 30,
+    paddingTop: height * 0.03,
     flex: 1,
-    backgroundColor: '#fff',
     backgroundColor: 'blue',
   },
   appBar: {
-    display: 'flex',
-    flexDirection: "row",
-    marginBottom: 16,
-    padding: 'auto',
+    flexDirection: 'row',
+    marginBottom: height * 0.02,
+    padding: width * 0.03,
     backgroundColor: '#000000af',
     borderRadius: 20,
     alignItems: 'center',
-    height: 30,
-    marginHorizontal: 12
+    height: height * 0.06,
+    marginHorizontal: width * 0.03,
   },
   appBarTitle: {
     color: 'white',
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
   },
   content: {
-    padding: 16,
-    paddingBottom: 80,
+    padding: width * 0.04,
+    paddingBottom: height * 0.5,
   },
   itineraireContainer: {
     backgroundColor: 'green',
     borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-    marginHorizontal: 20,
+    padding: width * 0.03,
+    marginBottom: height * 0.02,
+    marginHorizontal: width * 0.05,
   },
   itineraireText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     color: 'white',
-    marginBottom: 4,
+    marginBottom: height * 0.005,
   },
   connectionContainer: {
-    marginBottom: 10,
+    marginBottom: height * 0.01,
   },
   connectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
-  },
-  locationIcon: {
-    fontSize: 20,
-    color: 'white',
+    marginBottom: height * 0.005,
   },
   locationBadge: {
     backgroundColor: 'white',
     borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginLeft: 8,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.01,
+    marginLeft: width * 0.02,
   },
   locationBadgeText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     fontWeight: 'bold',
     color: 'black',
   },
   connectionDetails: {
-    marginLeft: 13,
+    marginLeft: width * 0.03,
     borderLeftWidth: 5,
-    padding: 8,
-    paddingLeft: 30,
-    height: 150,
+    padding: width * 0.02,
+    paddingLeft: width * 0.07,
+    height: height * 0.2,
     justifyContent: 'center',
   },
   connectionText: {
-    fontSize: 14,
+    fontSize: width * 0.04,
     color: 'white',
-    marginBottom: 5,
-    fontWeight: 'bold', 
-    fontSize: 16
+    marginBottom: height * 0.005,
+    fontWeight: 'bold',
   },
   centered: {
     flex: 1,
@@ -248,6 +232,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
 });

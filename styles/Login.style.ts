@@ -1,5 +1,9 @@
-import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { ImageStyle, StyleSheet, TextStyle, ViewStyle, Dimensions } from "react-native";
 import { COLORS, SIZES } from "../constants";
+
+const { width, height } = Dimensions.get("window");
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 interface Styles {
     container: ViewStyle;
@@ -19,193 +23,119 @@ interface Styles {
     btnQuitModal: ViewStyle;
     modal: ViewStyle;
     headModal: ViewStyle;
-    logo: ViewStyle;
+    logo: ImageStyle;
     forgotPassword: TextStyle;
     loginTitle: ViewStyle;
-    textLog1:TextStyle;
-    textLog2:TextStyle;
+    textLog1: TextStyle;
+    textLog2: TextStyle;
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Styles>({
     container: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: COLORS.primary,
-        height: SIZES.height,
-        position: 'relative'
     },
 
     head: {
-        height: '59%',
-        width: SIZES.width,
-        marginTop: 0,
-        marginBottom: 30,
+        height: height * 0.4, 
+        width: width,
         position: 'absolute',
-        top: 25,
-        objectFit: "cover",
+        top: 0,
         opacity: 0.85,
-    },
-
-    logo: {
-        height: SIZES.width/7.5,
-        width: 50,
-        marginTop: 0,
-        marginBottom: 30,
-        position: 'absolute',
-        right: '-75%',
-        objectFit: "cover",
-        opacity: 0.85,
-        borderRadius: 50
     },
 
     headContent: {
         backgroundColor: COLORS.bgBlue,
-        height: '100%'
+        height: '100%',
     },
 
-    image: {
-        width: 150,
-        height: 150,
-    },
-
-    title: {
+    logo: {
+        height: wp('12%'), 
+        width: wp('12%'),
         position: 'absolute',
-        top:  SIZES.height/3,
-        backgroundColor: COLORS.primary,
-        paddingHorizontal: SIZES.medium * 3.5,
-        paddingVertical: SIZES.medium,
-        borderRadius: SIZES.large,zIndex: 1000
+        right: wp('-38%'),
+        opacity: 0.85,
+        borderRadius: wp('6%'),
     },
-
-    titleText: {
-        fontSize: SIZES.medium * 1.5,
-        fontWeight: 'bold'
-    },
-
-    form: {
-        height: SIZES.height/2,
-        width: SIZES.width,
-        alignItems: 'center',
-        backgroundColor: COLORS.primary,
-        borderTopRightRadius: 40,
-        borderTopLeftRadius: 40
-    },
-
 
     formLogin: {
-        height: SIZES.height / 4,
-        width: SIZES.width,
+        height: height * 0.3, 
+        width: width,
         paddingBottom: 20,
-        gap: 30,
+        gap: height * 0.03,
         alignItems: 'center',
         backgroundColor: COLORS.primary,
         borderTopRightRadius: 40,
         borderTopLeftRadius: 40,
-        position: 'relative',
-        paddingTop: 110,
+        paddingTop: height * 0.15,
     },
 
     loginTitle: {
-        marginTop: 20,
+        marginTop: height * 0.02, 
         position: 'absolute',
-        left: 20
+        left: width * 0.05, 
     },
 
     inputText: {
-        width: '90%',
-        padding: 15,
-        fontSize: 16,
+        width: width * 0.9, 
+        padding: height * 0.02, 
+        fontSize: SIZES.medium,
         borderWidth: 1,
-        borderBottomColor: COLORS.bgBlue,
+        borderColor: COLORS.bgBlue,
         borderRadius: 10,
     },
 
     inputPassword: {
-        display: 'flex',
-        flexDirection: "row", 
+        flexDirection: "row",
         alignItems: 'center',
-        width: '90%',
-        padding: 7,
-        fontSize: 16,
+        width: width * 0.9, 
+        padding: height * 0.015, 
+        fontSize: SIZES.medium,
         borderWidth: 1,
-        borderBottomColor: COLORS.bgBlue,
+        borderColor: COLORS.bgBlue,
         borderRadius: 10,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
 
-
-    input: {
-        padding: 10,
-        fontSize: 16,
-    },
     icon: {
-        color: COLORS.bgBlue
-    },  
+        color: COLORS.bgBlue,
+    },
 
-    forgotPassword:{
-        marginTop: -10,  
-        marginRight:0,  
+    forgotPassword: {
+        marginTop: height * -0.01, 
         color: COLORS.bgBlue,
         position: 'absolute',
-        right: -160
+        right: width * 0.05, 
     },
 
     btnSubmit: {
-        width: SIZES.width - 30,
+        width: width * 0.9,
         backgroundColor: COLORS.bgBlue,
         paddingHorizontal: 10,
         paddingVertical: SIZES.small,
-        borderRadius:  SIZES.large
+        borderRadius: SIZES.large,
     },
 
     btnSubmitText: {
         textAlign: "center",
         fontWeight: 'bold',
         fontSize: SIZES.medium,
-        color: COLORS.primary
+        color: COLORS.primary,
     },
 
-    btnQuitModal: {
-        height: SIZES.xlarge, 
-        width: SIZES.xlarge, 
-        backgroundColor: COLORS.gray2,
-        fontSize: SIZES.large,
-        fontWeight: 'bold', 
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'absolute',
-        top: 10,
-        left: 10,
+    textLog1: {
+        fontSize: SIZES.medium,
     },
 
-    modal: {
-        height: SIZES.height - 90,
-        width: SIZES.width - 10,
-        marginHorizontal: 'auto',
-        marginVertical: 'auto',
-        position: 'relative',
-        top: -2
-    },
-
-    headModal: {
-        backgroundColor: 'white', 
-        paddingHorizontal: 20, 
-        borderRadius: 10 ,
-        paddingTop: 50,
-        paddingBottom: 20
-    },
-
-    textLog1:{
-        fontSize:16
-    },
-
-    textLog2:{
-        fontSize: 24,
+    textLog2: {
+        fontSize: SIZES.large * 1.2,
         fontWeight: 'bold',
         fontFamily: 'Faster One',
         fontStyle: 'normal',
-        color: COLORS.bgBlue
-    }
-})
+        color: COLORS.bgBlue,
+    },
+});
+
 export default styles;

@@ -1,9 +1,9 @@
-import { COLORS } from '../../constants';
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import PullToRefresh from '../../components/PullToRefresh';
-import * as Permissions from 'expo'; 
+import { COLORS } from '../../constants';
 
+const { width, height } = Dimensions.get('window');
 
 const ChoixPayment = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -15,7 +15,6 @@ const ChoixPayment = () => {
   ];
 
   const handleRefresh = async () => {
-    // Logique de rafraîchissement ici
     console.log("Refreshing ChoixPayment page...");
   };
 
@@ -43,16 +42,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: height * 0.01, 
+    marginBottom: 0, 
   },
   imageContainer: {
     borderWidth: 2,
     borderColor: 'transparent',
     borderRadius: 10,
-    padding: 10,
-    height: 75,
-    width: 75,
+    padding: width * 0.02, 
+    height: width * 0.2, 
+    width: width * 0.2, 
     overflow: 'hidden',
     backgroundColor: COLORS.primary,
   },

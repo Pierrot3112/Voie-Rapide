@@ -2,8 +2,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import URL from "../util/api.url";
 import NetInfo from '@react-native-community/netinfo';
-import * as Permissions from 'expo'; // Vérifiez si c'est toujours nécessaire
-import { Alert } from "react-native";
+import * as Permissions from 'expo';
+import Toast from 'react-native-toast-message';
 
 const api = axios.create({
     baseURL: URL,
@@ -19,7 +19,12 @@ api.interceptors.request.use(
     async (config) => {
         const isConnected = await checkInternetConnection();
         if (!isConnected) {
-            Alert.alert("Pas de connexion Internet. Veuillez vérifier votre connexion.");
+            Toast.show({
+                type: 'error',
+                text1: "Pas de connexion Internet",
+                text2: "Veuillez vérifier votre connexion.",
+                position: 'top',
+            });
             throw new axios.Cancel('No internet connection');
         }
 
@@ -40,33 +45,71 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (axios.isCancel(error)) {
-            Alert.alert("Requête annulée : L'opération a été interrompue.");
+            Toast.show({
+                type: 'info',
+                text1: "Requête annulée",
+                text2: "L'opération a été interrompue.",
+                position: 'top',
+            });
         } else if (error.response) {
             const status = error.response.status;
             const errorMessage = error.response.data?.detail || "Une erreur est survenue.";
 
             switch (status) {
                 case 400:
-                    Alert.alert(`Requête invalide : ${errorMessage}`);
+                    Toast.show({
+                        type: 'error',
+                        text1: `Requête invalide : ${errorMessage}`,
+                        position: 'top',
+                    });
                     break;
                 case 401:
-                    Alert.alert("Accès refusé : Votre session a expiré, veuillez vous reconnecter.");
+                    Toast.show({
+                        type: 'error',
+                        text1: "Accès refusé",
+                        text2: "Veuillez vous reconnecter.",
+                        position: 'top',
+                    });
                     break;
                 case 403:
-                    Alert.alert("Accès interdit : Vous n'avez pas les permissions nécessaires.");
+                    Toast.show({
+                        type: 'error',
+                        text1: "Accès interdit",
+                        text2: "Vous n'avez pas les permissions nécessaires.",
+                        position: 'top',
+                    });
                     break;
                 case 404:
-                    Alert.alert("Non trouvé : La ressource demandée est introuvable.");
+                    Toast.show({
+                        type: 'error',
+                        text1: "Non trouvé",
+                        text2: "La ressource demandée est introuvable.",
+                        position: 'top',
+                    });
                     break;
                 case 500:
-                    Alert.alert("Erreur serveur : Une erreur interne est survenue. Réessayez plus tard.");
+                    Toast.show({
+                        type: 'error',
+                        text1: "Erreur serveur",
+                        text2: "Une erreur interne est survenue. Réessayez plus tard.",
+                        position: 'top',
+                    });
                     break;
                 default:
-                    Alert.alert(`Erreur ${status} : ${errorMessage}`);
+                    Toast.show({
+                        type: 'error',
+                        text1: `Erreur ${status} : ${errorMessage}`,
+                        position: 'top',
+                    });
                     break;
             }
         } else {
-            Alert.alert("Problème de connexion : Veuillez vérifier votre connexion Internet.");
+            Toast.show({
+                type: 'error',
+                text1: "Problème de connexion",
+                text2: "Veuillez vérifier votre connexion Internet.",
+                position: 'top',
+            });
         }
 
         return Promise.reject(error);

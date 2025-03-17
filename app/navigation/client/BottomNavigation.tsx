@@ -82,7 +82,7 @@ const BottomTabNavigation = () => {
 
       <Tab.Screen
         name="Quitter"
-        component={HomeClient} // Vous pouvez mettre n'importe quel composant ici, car il ne sera pas utilisé
+        component={HomeClient} 
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -93,7 +93,7 @@ const BottomTabNavigation = () => {
           ),
           tabBarButton: (props) => (
             <TouchableOpacity
-              onPress={onLogout} // Déclenche la déconnexion directement
+              onPress={onLogout}
               style={{
                 flex: 1,
                 justifyContent: "center",

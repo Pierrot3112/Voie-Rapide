@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import styles from '../styles/account.client.style';
 import SelectCredit from './credit/SelectCredit';
 import ChoixPayment from './payment/ChoixPayment';
 import { TextInput } from 'react-native-paper';
-
 import api from "../config/AxioConfig";
+
+const { width, height } = Dimensions.get('window');
 
 const AccountClient = () => {
   const [user, setUser] = useState<any>(null);
@@ -13,10 +14,9 @@ const AccountClient = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-
     const fetchMe = async () => {
       try {
-        const response = await api.get("/me"); 
+        const response = await api.get("/me");
         setUser(response.data);
       } catch (err: any) {
         setError(err.message || "Une erreur s'est produite");
@@ -35,15 +35,14 @@ const AccountClient = () => {
     <SafeAreaView style={styles.global}>
       <View style={styles.creditContainer}>
         <View style={styles.creditCard}>
-          <Text>Mes crédits</Text>
-          <Text>{user.credit}</Text>
+          <Text style={{fontWeight: 'bold', textAlign: 'center', marginBottom: 5}}>Mes crédits</Text>
+          <Text style={{fontSize: 24, textAlign: 'center', }}>{user.credit}</Text>
         </View>
         <View style={styles.creditCard}>
-          {/* Contenu de la deuxième carte de crédit */}
-          <Text>Fix crédits</Text>
-          <Text>5 crédits: 5 000 Ar</Text>
-          <Text>12 crédits: 10 000 Ar</Text>
-          <Text>30 crédits: 25 000 Ar</Text>
+          <Text style={{fontWeight: 'bold', textAlign: 'center', marginBottom: 5}}>Fix crédits</Text>
+          <Text>- 5 crédits: 5 000Ar</Text>
+          <Text>- 12 crédits: 10 000Ar</Text>
+          <Text>- 30 crédits: 25 000Ar</Text>
         </View>
       </View>
       <View style={styles.paymentContainer}>
@@ -56,8 +55,8 @@ const AccountClient = () => {
       </View>
       <View style={styles.codeContainer}>
         <TextInput
-        style={styles.codeInput}
-          placeholder='Entrer ici votre code'
+          style={styles.codeInput}
+          placeholder="Entrer ici votre code"
         />
         <TouchableOpacity style={styles.validBtn}>
           <Text style={styles.textValidBtn}>Valider</Text>

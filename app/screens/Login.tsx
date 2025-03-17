@@ -6,6 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 import styles from '../../styles/Login.style';
 import useNetworkStatus from '../../components/NetworkStatus/NetworkStatus';
 import PullToRefresh from '../../components/PullToRefresh';
+import { COLORS } from '../../constants';
+import Toast from 'react-native-toast-message';
 
 const Login = () => {
     const [num_tel, setNumTel] = useState('');
@@ -15,15 +17,22 @@ const Login = () => {
     const { onLogin } = useAuth();
     const navigation = useNavigation();
     const isOnline = useNetworkStatus();
+    const [isLogin, setIsLogin] = useState(false);
 
     const togglePasswordVisibility = () => setSecureText(!secureText);
 
     const login = async () => {
+        if (isLogin) return
+
+        setIsLogin(true);
         if (!num_tel || !password) {
-            Alert.alert(
-                "Champs obligatoires",
-                "Tous les champs sont obligatoires. Veuillez réessayer."
-            );
+            Toast.show({
+                type: 'error', 
+                text1: 'Champs obligatoires', 
+                text2: 'Tous les champs sont obligatoires. Veuillez réessayer.', 
+                visibilityTime: 3000, 
+                autoHide: true,
+              });
             return;
         }
 
@@ -31,17 +40,15 @@ const Login = () => {
         const result = await onLogin(num_tel, password);
         setLoading(false);
 
-        if (result?.error) {
-            Alert.alert(
-                "Erreur de connexion",
-                "Utilisateur inexistant ou mot de passe incorrect. Veuillez réessayer."
-            );
-        } else {
+        if (!result?.error) {
             navigation.navigate("Home"); 
         }
     };
 
     const handleRefresh = async () => {
+        if (isLogin) {
+            setIsLogin(false);
+        }
         setNumTel('');
         setPassword('');
     };
@@ -67,7 +74,7 @@ const Login = () => {
                     />
                     <View style={styles.inputPassword}>
                         <TextInput
-                            style={styles.input}
+                            style={{padding: 0,margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue}}
                             placeholder="Mot de passe"
                             secureTextEntry={secureText}
                             onChangeText={setPassword}
@@ -83,8 +90,8 @@ const Login = () => {
                     <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading}>
                         <Text style={styles.btnSubmitText}>Se Connecter</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                        <Text style={{ textAlign: 'center', marginTop: 10 }}>Créer un compte</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Register")} style={[styles.btnSubmit, {backgroundColor: 'transparent', borderWidth: 1, }]}>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Créer un compte</Text>
                     </TouchableOpacity>
                     {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
                 </View>

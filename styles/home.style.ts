@@ -4,6 +4,7 @@ import { COLORS, SIZES } from "../constants";
 const styles = StyleSheet.create({
     global: {
         flex: 1,
+        backgroundColor: COLORS.gray2
     },
 
     clientContainer: {

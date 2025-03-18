@@ -1,36 +1,31 @@
-{
-  "expo": {
-    "name": "vr_info",
-    "slug": "vrinfo",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.pierrot3112.VrInfo"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.pierrot3112.VrInfo"
-    },
-    "web": {
-      "favicon": "./assets/icon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "NewProject"
-      }
-    },
-    "owner": "pierrot3112"
-  }
-}
+Palette Principale
+
+    Bleu-Turquoise (#2AC3D4 ou #00C1B3)
+
+        Symbolise la fluidité, la confiance et la modernité.
+
+        Idéal pour les boutons, icônes et éléments interactifs.
+
+    Blanc/Gris Clair (#F5F5F5 ou #FFFFFF)
+
+        Pour les arrière-plans et espaces vides, pour une app minimaliste et légère.
+
+    Gris Anthracite (#2D2D2D ou #333333)
+
+        Pour les textes et éléments clés (titres, barres de navigation).
+
+Couleurs d’Alerte (Trafic en temps réel)
+
+    Vert (#4CAF50) : Route fluide.
+
+    Orange (#FF9800) : Trafic modéré.
+
+    Rouge (#F44336) : Embouteillage.
+
+    Utilisez ces couleurs avec parcimonie (ex: cartes, notifications) pour éviter la surcharge visuelle.
+
+Accents Dynamiques
+
+    Jaune Vif (#FFD700) ou Corail (#FF6B6B)
+
+        Pour attirer l’attention sur les mises à jour ou promotions.

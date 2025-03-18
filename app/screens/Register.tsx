@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, ImageBackground, Text, ActivityIndicator, Modal, View, Alert } from 'react-native';
+import { TextInput, TouchableOpacity, ImageBackground, Text, ActivityIndicator, Modal, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -21,40 +21,40 @@ const Register = () => {
     const [secureText, setSecureText] = useState(true);
     const [secureTextConfirm, setSecureTextConfirm] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const navigation = useNavigation();
     const isOnline = useNetworkStatus();
     const { onRegister } = useAuth();
 
     const malagasyPhoneRegex = /^(?:\+261|0)(32|33|34|38|39)\d{7}$/;
-    const [isRegistering, setIsRegistering] = useState(false);
 
     const handleRegister = async () => {
-        if (isRegistering) return; 
-    
+        if (isRegistering) return;
+
         setIsRegistering(true);
-    
+
         if (password !== confirmPassword) {
             Toast.show({ type: 'error', text1: "Les mots de passe ne correspondent pas" });
             setIsRegistering(false);
             return;
         }
-    
+
         if (!malagasyPhoneRegex.test(num_tel)) {
             Toast.show({ type: 'error', text1: "Numéro de téléphone invalide" });
             setIsRegistering(false);
             return;
         }
-    
+
         if (!acceptTerms) {
             setShowCheckboxError(true);
             setTimeout(() => setShowCheckboxError(false), 1000);
             setIsRegistering(false);
             return;
         }
-    
+
         setLoading(true);
-    
+
         try {
             const response = await onRegister(nom, num_tel, password);
             if (response.error) {
@@ -70,25 +70,24 @@ const Register = () => {
             setIsRegistering(false);
         }
     };
-    
+
     const handleRefresh = async () => {
         if (isRegistering) {
-            setIsRegistering(false); // Annule l'inscription si en cours
+            setIsRegistering(false);
         }
-    
+
         setNom('');
         setNumTel('');
         setPassword('');
         setConfirmPassword('');
         setAcceptTerms(false);
     };
-    
 
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <View style={styles.container}>
-                <ImageBackground 
-                    source={require('../../assets/images/city.jpg')} 
+                <ImageBackground
+                    source={require('../../assets/images/city.jpg')}
                     style={styles.head}
                     resizeMode="cover"
                 >
@@ -96,13 +95,7 @@ const Register = () => {
                 </ImageBackground>
                 <View style={styles.form}>
                     <View style={styles.loginTitle}>
-                        <Text style={styles.textLog1}>Salut!!!</Text>
                         <Text style={styles.textLog2}>Inscription</Text>
-                        <ImageBackground 
-                            source={require('../../assets/images/logoVoieRapide.png')} 
-                            style={styles.logo}
-                            resizeMode="cover"
-                        />
                     </View>
                     <TextInput
                         style={styles.inputText}
@@ -119,7 +112,7 @@ const Register = () => {
                     />
                     <View style={styles.inputPassword}>
                         <TextInput
-                            style={{padding: 0,margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue}}
+                            style={{ padding: 0, margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue }}
                             placeholder="Mot de passe"
                             secureTextEntry={secureText}
                             onChangeText={setPassword}
@@ -131,7 +124,7 @@ const Register = () => {
                     </View>
                     <View style={styles.inputPassword}>
                         <TextInput
-                            style={{padding: 0,margin: 0, borderColor: COLORS.bgBlue}}
+                            style={{ padding: 0, margin: 0, borderColor: COLORS.bgBlue }}
                             placeholder="Confirmer le mot de passe"
                             secureTextEntry={secureTextConfirm}
                             onChangeText={setConfirmPassword}
@@ -141,20 +134,24 @@ const Register = () => {
                             <Ionicons name={secureTextConfirm ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.btnSubmit} onPress={handleRegister} disabled={loading}>
-                        <Text style={styles.btnSubmitText}>S'inscrire</Text>
+                    <TouchableOpacity style={styles.btnSubmit} onPress={handleRegister} disabled={loading || isRegistering}>
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                        ) : (
+                            <Text style={styles.btnSubmitText}>S'inscrire</Text>
+                        )}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                        <Text style={{ textAlign: 'center', marginTop: 10 }}>
-                            Se connecter si vous avez déjà un compte
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")} style={[styles.btnSubmit, { backgroundColor: '#fb8500', borderWidth: 0 }]}>
+                        <Text style={{ textAlign: 'center', backgroundColor: '#fb8500' }}>
+                            Se connecter
                         </Text>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => setAcceptTerms(!acceptTerms)}>
-                            <Ionicons 
-                                name={acceptTerms ? "checkbox-outline" : "square-outline"} 
-                                size={24} 
-                                color={showCheckboxError ? "red" : "gray"} 
+                            <Ionicons
+                                name={acceptTerms ? "checkbox-outline" : "square-outline"}
+                                size={24}
+                                color={showCheckboxError ? "red" : "#fb8500"}
                             />
                         </TouchableOpacity>
                         <Text style={{ marginLeft: 10 }}>
@@ -167,7 +164,6 @@ const Register = () => {
                         </Text>
                     )}
                 </View>
-                {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
                 <Modal
                     animationType="slide"
                     transparent={true}

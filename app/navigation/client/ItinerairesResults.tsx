@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../constants';
 import Toast from 'react-native-toast-message';
+import Header from '../../../components/Header';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,11 +72,12 @@ const ItinerairesResults = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Bouton Retour */}
+      <Header />
       <View style={styles.backButton}>
         <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={28} color="white" />
+          <Ionicons name="arrow-back" size={28} color={COLORS.primary} />
         </TouchableOpacity>
-        <Text style={[styles.titlePage, { flex: 3 }]}>Itinéraires</Text>
+        <Text style={[styles.titlePage, { flex: 3, color: COLORS.primary }]}>Itinéraires {selectedValue === 0 ? 'Le plus rapide' : 'Le plus court'}</Text>
       </View>
 
       {/* Afficher les résultats */}
@@ -86,8 +88,8 @@ const ItinerairesResults = () => {
           {/* Bloc 1 : Départ et Arrivée */}
           {validResults.length > 0 && (
             <View style={styles.block}>
-              <Text style={styles.blockTitle}>Départ: {validResults[0].depart_nom}</Text>
-              <Text style={styles.blockTitle}>Arrivée: {validResults[0].arrivee_nom}</Text>
+              <Text style={styles.blockTitle}><Ionicons name="location-sharp" size={16} color={COLORS.primary} />    {validResults[0].depart_nom}</Text>
+              <Text style={styles.blockTitle}><Ionicons name="flag" size={16} color={COLORS.primary} />    {validResults[0].arrivee_nom}</Text>
             </View>
           )}
 
@@ -105,7 +107,7 @@ const ItinerairesResults = () => {
                   <Text style={styles.distance}>Distance: {item.distance} km</Text>
                   <Text style={styles.duration}>Durée: {item.somme_duree_trajection} min</Text>
                 </View>
-                <Ionicons name="arrow-forward" style={styles.arrowIcon} size={30} />
+                <Ionicons name="arrow-forward" style={styles.arrowIcon} size={30} color={COLORS.gray2} />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -118,23 +120,22 @@ const ItinerairesResults = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: '5%',
     backgroundColor: COLORS.gray2,
   },
   titlePage: {
     textAlign: 'left',
-    color: COLORS.primary,
     fontSize: 18,
     fontWeight: 'bold',
   },
   block: {
     padding: 16,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    backgroundColor: COLORS.yellow,
     marginBottom: 16,
+    marginHorizontal: '2%',
+    borderRadius: height*0.02
   },
   blockTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
   },
@@ -142,26 +143,28 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 1,
     paddingBottom: height * 0.5,
-    marginBottom: 70
+    marginBottom: 70,
+    marginHorizontal: '2%',
+    gap: 10
   },
   item: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: 8,
     backgroundColor: COLORS.primary,
-    marginBottom: 20,
+    marginBottom: 10,
     borderRadius: 20,
   },
   itemContent: {
-    flex: 4,
+    flex: 10,
     paddingLeft: 10,
   },
   title: {
     fontSize: 14,
     fontWeight: 'bold',
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.gray2,
     borderRadius: 10,
     marginBottom: 3,
     color: COLORS.primary,
@@ -187,9 +190,7 @@ const styles = StyleSheet.create({
   backButton: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: 16,
     paddingVertical: 8,
-    backgroundColor: '#000000af',
     borderRadius: 20,
     alignItems: 'center',
     height: 40,

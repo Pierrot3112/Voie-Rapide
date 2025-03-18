@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     loginTitle: {
         position: 'absolute',
         top: hp('2%'),
-        left: wp('5%'),
+        left: wp('30%'),
     },
 
     inputText: {

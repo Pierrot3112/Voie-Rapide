@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     StyleSheet, TextInput, TouchableOpacity, Text, View, 
-    ActivityIndicator, SafeAreaView, Dimensions 
+    ActivityIndicator, SafeAreaView, Dimensions, KeyboardAvoidingView, Platform 
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../config/AxioConfig';
 import { COLORS } from '../../constants';
 import PullToRefresh from '../../components/PullToRefresh';
@@ -23,6 +24,31 @@ const ValidCodeOtp = () => {
 
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resendDisabled, setResendDisabled] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(0);
+
+    useEffect(() => {
+        const checkResendTime = async () => {
+            const lastResendTime = await AsyncStorage.getItem('lastResendTime');
+            if (lastResendTime) {
+                const now = Date.now();
+                const timeElapsed = now - parseInt(lastResendTime);
+
+                if (timeElapsed < 5 * 60 * 1000) {
+                    setResendDisabled(true);
+                    setTimeLeft(Math.floor((5 * 60 * 1000 - timeElapsed) / 1000));
+                }
+            }
+        };
+        checkResendTime();
+
+        const interval = setInterval(() => {
+            setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
+            if (timeLeft <= 0) setResendDisabled(false);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timeLeft]);
 
     const handleSubmitOtp = async () => { 
         setLoading(true);
@@ -31,20 +57,27 @@ const ValidCodeOtp = () => {
             Toast.show({ type: 'success', text1: 'Succès', text2: 'Votre compte a été validé!' });
             navigation.navigate('Login');
         } catch (error) {
-            Toast.show({ type: 'error', text1: 'Erreur', text2: 'Erreur lors de la vérification!' });
+            Toast.show({ type: 'error', text1: 'Code invalide', text2: 'Veuillez renvoyer le code!' });
         } finally {
             setLoading(false);
         }
     };
 
     const handleResendOtp = async () => {
+        if (resendDisabled) return;
+
         setLoading(true);
         try {
-            const data = { num_tel: phoneNumber };
-            await api.post('/resend-code', { data });
+            await api.post('/resend-code', { num_tel: phoneNumber });
+
+            const now = Date.now();
+            await AsyncStorage.setItem('lastResendTime', now.toString());
+
             Toast.show({ type: 'success', text1: 'Code OTP renvoyé' });
+            setResendDisabled(true);
+            setTimeLeft(5 * 60);
         } catch (error) {
-            Toast.show({ type: 'error', text1: 'Compte déjà activé', text2: 'Veuillez réinitialiser votre mot de passe si vous l\'avez oublié' });
+            Toast.show({ type: 'error', text1: 'Erreur lors de l\'envoi du code', text2: 'Veuillez réessayer plus tard' });
         } finally {
             setLoading(false);
         }
@@ -55,35 +88,43 @@ const ValidCodeOtp = () => {
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <SafeAreaView style={styles.global}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Ionicons name='arrow-back' size={24} />
-                </TouchableOpacity>
-
-                <Text style={styles.title}>Vérification du Code OTP</Text>
-
-                <View style={styles.formContainer}>
-                    <TextInput
-                        placeholder="Entrez le code OTP"
-                        onChangeText={setOtp}
-                        value={otp}
-                        keyboardType="numeric"
-                        style={styles.codeInput}
-                    />
-                    {loading ? (
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    ) : (
-                        <TouchableOpacity onPress={handleSubmitOtp} style={styles.btnCodeValid}>
-                            <Text style={styles.btnText}>Vérifier OTP</Text>
-                        </TouchableOpacity>
-                    )}
-
-                    <TouchableOpacity onPress={handleResendOtp} style={styles.resendBtn}>
-                        <Text style={styles.text}>Vous n'avez pas reçu ce code?</Text>
-                        <Text style={styles.resendText}>Renvoyer le code</Text>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name='arrow-back' size={24} color={COLORS.primary} />
                     </TouchableOpacity>
-                </View>
+
+                    <Text style={styles.title}>Saisir le code réçu par SMS</Text>
+
+                    <View style={styles.formContainer}>
+                        <TextInput
+                            placeholder="Entrez le code de validation"
+                            placeholderTextColor={COLORS.primary}
+                            onChangeText={setOtp}
+                            value={otp}
+                            keyboardType="numeric"
+                            maxLength={6}
+                            style={styles.codeInput}
+                        />
+                        {loading ? (
+                            <ActivityIndicator size="large" color={COLORS.bgBlue} />
+                        ) : (
+                            <TouchableOpacity onPress={handleSubmitOtp} style={styles.btnCodeValid}>
+                                <Text style={styles.btnText}>Valider le code</Text>
+                            </TouchableOpacity>
+                        )}
+
+                        <Text style={styles.text}>Vous n'avez pas reçu ce code?</Text>
+                        <TouchableOpacity onPress={handleResendOtp} style={styles.resendBtn} disabled={resendDisabled}>
+                            {resendDisabled ? (
+                                <Text style={styles.resendText}>Réessayez dans {Math.floor(timeLeft / 60)}:{timeLeft % 60}</Text>
+                            ) : (
+                                <Text style={styles.resendText}>Renvoyer le code</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </KeyboardAvoidingView>
+                <Toast />
             </SafeAreaView>
-            <Toast />
         </PullToRefresh>
     );
 };
@@ -93,70 +134,72 @@ export default ValidCodeOtp;
 const styles = StyleSheet.create({
     global: {
         flex: 1,
+        backgroundColor:  COLORS.bgBlue,
+    },
+    container: {
+        marginTop: width * 0.2,
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         paddingHorizontal: width * 0.05,
-        paddingTop: height * 0.05,
-        backgroundColor: '#fff',
     },
-
     backButton: {
-        marginBottom: 10,
+        position: 'absolute',
+        top: -height * 0.05,
+        left: width * 0.05,
+        zIndex: 10,
     },
-
     title: {
-        textAlign: 'center',
-        fontWeight: 'bold',
         fontSize: width * 0.06,
-        marginVertical: height * 0.02,
+        fontWeight: 'bold',
+        color: COLORS.primary,
+        textAlign: 'center',
+        marginBottom: height * 0.03,
     },
-
     formContainer: {
         width: '100%',
         padding: width * 0.05,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.lightGray,
         borderRadius: 10,
-        borderColor: COLORS.gray2,
-        borderWidth: 2,
         alignItems: 'center',
     },
-
     codeInput: {
         width: '100%',
-        borderRadius: 30,
-        backgroundColor: COLORS.gray2,
-        padding: height * 0.02,
-        fontSize: width * 0.05,
+        height: height * 0.06,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: COLORS.secondary,
+        backgroundColor: 'transparent',
+        paddingHorizontal: width * 0.04,
+        fontSize: width * 0.045,
         textAlign: 'center',
     },
-
     btnCodeValid: {
-        backgroundColor: COLORS.bgBlue,
-        padding: height * 0.02,
+        backgroundColor: COLORS.secondary,
+        paddingVertical: height * 0.015,
         marginTop: height * 0.02,
         width: '100%',
-        borderRadius: 50,
+        borderRadius: 10,
         alignItems: 'center',
     },
-
     btnText: {
-        color: COLORS.primary,
+        color: '#fff',
         fontWeight: 'bold',
-        fontSize: width * 0.05,
+        fontSize: width * 0.045,
     },
 
     resendBtn: {
-        marginTop: height * 0.02,
-    },
-
-    resendText: {
-        color: COLORS.bgBlue,
-        fontSize: width * 0.045,
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
     },
 
     text: {
-        fontSize: width * 0.04,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        marginTop: height*0.03,
+        fontSize: 18,
+        color: COLORS.primary,
+    },
+
+    resendText: {
+        fontSize: 18,
+        color: COLORS.tertiary,
+        textDecorationLine: "underline"
     },
 });

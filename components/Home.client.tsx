@@ -6,6 +6,7 @@ import api from "../config/AxioConfig";
 import { SIZES } from '../constants';
 import FormSearch from './search/FormSearch';
 import PullToRefresh from './PullToRefresh';
+import Header from './Header';
 
 const HomeClient = () => {
   const { width, height } = useWindowDimensions(); 
@@ -61,31 +62,7 @@ const HomeClient = () => {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <SafeAreaView style={styles.global}>
-        {user && (
-          <View style={[styles.clientContainer, { width, height: height * 0.25 }]}>
-            <View style={styles.df}>
-              <Text style={styles.idNumber}>{user.num_tel}</Text>
-              <Image 
-                source={require('../assets/images/user.png')} 
-                style={{
-                  height: SIZES.xxLarge * 1.5,
-                  width: SIZES.xxLarge * 1.5,
-                  resizeMode: 'contain'
-                }}
-              />
-            </View>
-            <View style={[styles.df, { marginTop: SIZES.xxLarge / 4 }]}>
-              <View>
-                <Text style={styles.title}>Mes crédits</Text>
-                <Text style={styles.number}>{user.credit}</Text>
-              </View>
-              <View>
-                <Text style={styles.title}>Consultations</Text>
-                <Text style={styles.number}>{user.nb_consultation}</Text>
-              </View>
-            </View>
-          </View>
-        )}
+        <Header />
         <FormSearch />
       </SafeAreaView>
     </PullToRefresh>

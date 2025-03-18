@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ImageBackground, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, TextInput, TouchableOpacity, ImageBackground, Text, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
@@ -22,17 +22,18 @@ const Login = () => {
     const togglePasswordVisibility = () => setSecureText(!secureText);
 
     const login = async () => {
-        if (isLogin) return
+        if (isLogin) return;
 
         setIsLogin(true);
         if (!num_tel || !password) {
             Toast.show({
-                type: 'error', 
-                text1: 'Champs obligatoires', 
-                text2: 'Tous les champs sont obligatoires. Veuillez réessayer.', 
-                visibilityTime: 3000, 
+                type: 'error',
+                text1: 'Champs obligatoires',
+                text2: 'Tous les champs sont obligatoires. Veuillez réessayer.',
+                visibilityTime: 3000,
                 autoHide: true,
-              });
+            });
+            setIsLogin(false);
             return;
         }
 
@@ -41,14 +42,14 @@ const Login = () => {
         setLoading(false);
 
         if (!result?.error) {
-            navigation.navigate("Home"); 
+            navigation.navigate("Home");
+        } else {
+            setIsLogin(false);
         }
     };
 
     const handleRefresh = async () => {
-        if (isLogin) {
-            setIsLogin(false);
-        }
+        setIsLogin(false);
         setNumTel('');
         setPassword('');
     };
@@ -61,9 +62,7 @@ const Login = () => {
                 </ImageBackground>
                 <View style={styles.formLogin}>
                     <View style={styles.loginTitle}>
-                        <Text style={styles.textLog1}>Bienvenue!!!</Text>
                         <Text style={styles.textLog2}>Authentification</Text>
-                        <ImageBackground source={require('../../assets/images/logoVoieRapide.png')} style={styles.logo} />
                     </View>
                     <TextInput
                         style={styles.inputText}
@@ -74,7 +73,7 @@ const Login = () => {
                     />
                     <View style={styles.inputPassword}>
                         <TextInput
-                            style={{padding: 0,margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue}}
+                            style={{ padding: 0, margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue }}
                             placeholder="Mot de passe"
                             secureTextEntry={secureText}
                             onChangeText={setPassword}
@@ -84,16 +83,19 @@ const Login = () => {
                             <Ionicons name={secureText ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading || isLogin}>
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#ffffff" />
+                        ) : (
+                            <Text style={styles.btnSubmitText}>Se Connecter</Text>
+                        )}
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('ForgotPassWord')} disabled={loading}>
                         <Text style={styles.forgotPassword}>Mot de passe oublié</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading}>
-                        <Text style={styles.btnSubmitText}>Se Connecter</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("Register")} style={[styles.btnSubmit, {backgroundColor: 'transparent', borderWidth: 1, }]}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Register")} style={[styles.btnSubmit, { backgroundColor: '#fb8500', borderWidth: 0 }]}>
                         <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Créer un compte</Text>
                     </TouchableOpacity>
-                    {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 10 }} />}
                 </View>
             </View>
         </PullToRefresh>

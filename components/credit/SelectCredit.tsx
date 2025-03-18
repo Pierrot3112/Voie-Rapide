@@ -1,39 +1,60 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, StyleSheet, TouchableOpacity,  Dimensions, Text } from 'react-native';
+import { COLORS } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
 const SelectCredit = () => {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+
+  const options = [
+    { id: 1, name: "5 Crédits" }, 
+    { id: 2, name: "12 Cédits" }, 
+    { id: 3, name: "30 Crédits" }, 
+  ];
 
   return (
     <View style={styles.container}>
-      <Picker
-        selectedValue={selectedValue}
-        onValueChange={(itemValue) => setSelectedValue(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Choix de crédit" value="null" />
-        <Picker.Item label="5 crédits: 5 000 Ar" value="5" />
-        <Picker.Item label="12 crédits: 10 000 Ar" value="12" />
-        <Picker.Item label="30 crédits: 25 000 Ar" value="30" />
-      </Picker>
+      {options.map((option) => (
+        <TouchableOpacity
+          key={option.id}
+          onPress={() => setSelectedId(option.id)}
+          style={[
+            styles.imageContainer,
+            selectedId === option.id && styles.selected,
+          ]}
+        >
+          <Text>{option.name}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    margin: width * 0.05, 
-    backgroundColor: 'white',
-    borderRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: height * 0.01, 
+    marginBottom: 0, 
   },
-  picker: {
-    height: height * 0.08, 
+  imageContainer: {
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 10,
+    padding: width * 0.02, 
+    height: width * 0.2, 
+    width: width * 0.2, 
+    overflow: 'hidden',
+    backgroundColor: COLORS.primary,
+  },
+  selected: {
+    borderColor: COLORS.black,
+  },
+  image: {
     width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
 

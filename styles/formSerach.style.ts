@@ -19,33 +19,34 @@ interface Styles {
 
 const styles = StyleSheet.create<Styles>({
     container: {
-        marginVertical: height * 0.02, // 2% de la hauteur
-        padding: width * 0.03, // 3% de la largeur
-        backgroundColor: 'white',
+        marginVertical: height * 0.02,
+        padding: width * 0.03, 
+        backgroundColor: COLORS.primary,
         borderWidth: 1,
         borderRadius: 5,
         elevation: 2,
-        width: width * 0.95, // 95% de la largeur
-        height: height * 0.5, // 50% de la hauteur
-        borderColor: COLORS.gray2,
+        width: width * 0.95, 
+        height: height * 0.5,
+        borderColor: COLORS.bgBlue,
         alignSelf: 'center',
     },
 
     input: {
         width: '100%',
-        height: height * 0.06, // 6% de la hauteur
+        height: height * 0.06, 
         borderWidth: 2,
-        borderColor: COLORS.bgBlue,
-        marginTop: height * 0.02, // 2% de la hauteur
+        borderColor: COLORS.secondary,
+        marginTop: height * 0.02,
         borderRadius: SIZES.medium - 10,
+        backgroundColor: 'transparent',
     },
 
     btn1: {
         flexDirection: 'row',
         width: '100%',
-        backgroundColor: COLORS.bgBlue,
-        padding: width * 0.03, // 3% de la largeur
-        marginTop: height * 0.02, // 2% de la hauteur
+        backgroundColor: COLORS.secondary,
+        padding: width * 0.01,
+        marginTop: height * 0.02, 
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
@@ -54,53 +55,52 @@ const styles = StyleSheet.create<Styles>({
 
     suggestionContainer: {
         position: 'absolute',
-        top: height * 0.1, // 10% de la hauteur
+        top: height * 0.1, 
         left: 0,
         right: 0,
-        backgroundColor: 'white',
+        backgroundColor: COLORS.tertiary,
         zIndex: 1000,
         elevation: 5,
         borderWidth: 1,
-        borderColor: '#ccc',
         borderRadius: 5,
-        padding: width * 0.03, // 3% de la largeur
-        gap: height * 0.02, // 2% de la hauteur
+        padding: width * 0.03, 
+        gap: height * 0.02, 
     },
 
     suggestionItem: {
-        marginBottom: height * 0.01, // 1% de la hauteur
+        marginBottom: height * 0.01,
     },
 
     pickerContainer: {
-        marginVertical: height * 0.01, // 1% de la hauteur
+        marginVertical: height * 0.01, 
         borderWidth: 1,
-        borderColor: '#ccc',
         borderRadius: 5,
     },
 
     picker: {
-        height: height * 0.06, // 6% de la hauteur
+        height: height * 0.06, 
         width: '100%',
     },
 
     radioTitle: {
         fontSize: SIZES.medium,
         fontWeight: 'bold',
-        marginBottom: height * 0.01, // 1% de la hauteur
+        marginBottom: height * 0.01, 
     },
 
     radioItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: height * 0.01, // 1% de la hauteur
+        marginVertical: height * 0.01, 
     },
 
     radioStyle: {
-        marginTop: height * 0.02, // 2% de la hauteur
+        marginTop: height * 0.02, 
     },
 
     inputContainer: {
         borderRadius: 100,
+        
     },
 });
 

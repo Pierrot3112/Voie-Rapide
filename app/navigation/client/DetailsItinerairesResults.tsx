@@ -14,6 +14,8 @@ import 'moment/locale/fr';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../../config/AxioConfig';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../../../components/Header';
+import { COLORS } from 'constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -94,11 +96,12 @@ const DetailItineraireScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header />
       <View style={styles.appBar}>
         <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
-        <Text style={[styles.appBarTitle, { flex: 3 }]}>Itinéraires</Text>
+        <Text style={[styles.appBarTitle, { flex: 5 }]}>Détail de l'itinéraire choisi </Text>
       </View>
       <View style={styles.itineraireContainer}>
         <Text style={styles.itineraireText}>Départ : {itineraireDetails?.depart_nom}</Text>
@@ -158,13 +161,12 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: height * 0.03,
     flex: 1,
-    backgroundColor: 'blue',
+    backgroundColor: COLORS.gray2,
   },
   appBar: {
     flexDirection: 'row',
     marginBottom: height * 0.02,
     padding: width * 0.03,
-    backgroundColor: '#000000af',
     borderRadius: 20,
     alignItems: 'center',
     height: height * 0.06,

@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
     height: width * 0.2, 
     width: width * 0.2, 
     overflow: 'hidden',
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.secondary,
   },
   selected: {
-    borderColor: COLORS.black,
+    borderColor: COLORS.gray,
   },
   image: {
     width: '100%',

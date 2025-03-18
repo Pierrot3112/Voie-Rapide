@@ -75,7 +75,7 @@ const styles = StyleSheet.create<Styles>({
     loginTitle: {
         marginTop: height * 0.02, 
         position: 'absolute',
-        left: width * 0.05, 
+        left: width * 0.25, 
     },
 
     inputText: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create<Styles>({
         marginTop: height * -0.01, 
         color: COLORS.bgBlue,
         position: 'absolute',
-        right: width * 0.05, 
+        left: width * 0.05, 
     },
 
     btnSubmit: {
@@ -134,7 +134,8 @@ const styles = StyleSheet.create<Styles>({
         fontWeight: 'bold',
         fontFamily: 'Faster One',
         fontStyle: 'normal',
-        color: COLORS.bgBlue,
+        color: COLORS.gray,
+        textAlign: 'center'
     },
 });
 

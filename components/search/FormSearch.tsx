@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, RadioButton } from 'react-native-paper';
 import styles from '../../styles/formSerach.style';
 import data from '../../util/points.json';
+import { COLORS } from 'constants';
 
 type ItinerairesResultsParams = {
   departureId: number;
@@ -72,6 +73,7 @@ const FormSearch = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 label="Point de départ"
+                textColor= { COLORS.secondary }
                 value={departureQuery}
                 onChangeText={(text) => {
                   setDepartureQuery(text);
@@ -93,7 +95,7 @@ const FormSearch = () => {
                           setFilteredDeparture([]);
                         }}
                       >
-                        <Text>{item.nom} ({item.location})</Text>
+                        <Text style={{color: COLORS.bgBlue}}>{item.nom} ({item.location})</Text>
                       </TouchableOpacity>
                     )}
                   />
@@ -105,6 +107,7 @@ const FormSearch = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 label="Point d'arrivée"
+                textColor= { COLORS.secondary }
                 value={arrivalQuery}
                 onChangeText={(text) => {
                   setArrivalQuery(text);
@@ -126,7 +129,7 @@ const FormSearch = () => {
                           setFilteredArrival([]);
                         }}
                       >
-                        <Text>{item.nom} ({item.location})</Text>
+                        <Text style={{color: COLORS.bgBlue}}>{item.nom} ({item.location})</Text>
                       </TouchableOpacity>
                     )}
                   />
@@ -141,12 +144,13 @@ const FormSearch = () => {
                 value={selectedValue.toString()}
               >
                 <View style={styles.radioItem}>
-                  <RadioButton value="0" />
-                  <Text>Le plus rapide</Text>
+                <RadioButton value="0" color={COLORS.secondary} />
+
+                  <Text style={{color: COLORS.secondary}}>Le plus rapide</Text>
                 </View>
                 <View style={styles.radioItem}>
-                  <RadioButton value="1" />
-                  <Text>Le plus court</Text>
+                  <RadioButton value="1"color= {COLORS.secondary} />
+                  <Text style={{color: COLORS.secondary}}>Le plus court</Text>
                 </View>
               </RadioButton.Group>
             </View>

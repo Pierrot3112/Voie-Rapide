@@ -1,6 +1,9 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../config/AxioConfig";
+import Toast from "react-native-toast-message";
+import { navigationRef } from "../navigation/client/BottomNavigation";
+
 
 const TOKEN_KEY = "token";
 
@@ -39,13 +42,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const loadToken = async () => {
             try {
                 const token = await checkToken();
-                if (token) {
-                    setAuthState({ token, authenticated: true});
-                } else {
-                    setAuthState({ token: null, authenticated: false });
-                }
-            } catch (error) {
-                console.error("❌ Erreur lors du chargement du token :", error);
+                setAuthState({ token, authenticated: !!token });
+            } catch {
+                setAuthState({ token: null, authenticated: false });
             }
         };
         loadToken();
@@ -59,42 +58,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             await AsyncStorage.setItem(TOKEN_KEY, token);
             setAuthState({ token, authenticated: true });
 
+            Toast.show({ type: "success", text1: "Connexion réussie", position: "top" });
             return { error: false, msg: "Connexion réussie" };
         } catch (error: any) {
             return { error: true, msg: error.response?.data?.msg || "Échec de la connexion" };
         }
     };
 
-    const register = async (nom: string, num_tel: string, password: string ) => {
+    const register = async (nom: string, num_tel: string, password: string) => {
         try {
             const response = await api.post("/signup", { nom, num_tel, password });
-    
+            Toast.show({ type: "success", text1: "Inscription réussie", position: "top" });
             return { error: false, msg: "Inscription réussie" };
-
         } catch (error: any) {
-            console.error("❌ Erreur API:", error.response?.data);
-            return { error: true, msg: error.response?.data?.msg || "Échec de l'inscription" };
+            let errorMessage = "Échec de l'inscription";
+            if (error.response) {
+                if (error.response.status === 400) {
+                    errorMessage = "Données invalides. Vérifiez votre saisie.";
+                } else if (error.response.status === 409) {
+                    errorMessage = "Numéro de téléphone déjà utilisé.";
+                } else if (error.response.data && error.response.data.msg) {
+                    errorMessage = error.response.data.msg;
+                }
+            } else {
+                errorMessage = "Erreur inconnue. Veuillez réessayer plus tard.";
+            }
+            Toast.show({ type: "error", text1: errorMessage, position: "top" });
+            return { error: true, msg: errorMessage };
         }
     };
+    
+    
 
     const logout = async () => {
         await AsyncStorage.removeItem(TOKEN_KEY);
         setAuthState({ token: null, authenticated: false });
+        Toast.show({ type: "info", text1: "Déconnexion réussie", position: "top" });
+
+        if (navigationRef.isReady()) {
+            navigationRef.navigate("Login");
+        }
     };
 
-
-
     return (
-        <AuthContext.Provider
-            value={{
-                authState,
-                onLogin: login,
-                onRegister: register,
-                onLogout: logout,
-                checkToken,
-                getRole
-            }}
-        >
+        <AuthContext.Provider value={{ authState, onLogin: login, onRegister: register, onLogout: logout, checkToken, getRole }}>
             {children}
         </AuthContext.Provider>
     );
@@ -103,20 +110,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 export const checkToken = async (): Promise<string | null> => {
     try {
         return await AsyncStorage.getItem(TOKEN_KEY);
-    } catch (error) {
-        console.error("❌ Erreur lors de la vérification du token :", error);
+    } catch {
         return null;
     }
 };
 
 export const getRole = async (token: string): Promise<string> => {
     try {
-        const response = await api.get("/me", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
         return response.data.role;
-    } catch (error) {
-        console.error("❌ Erreur lors de la récupération du rôle :", error);
-        return 'user';
+    } catch {
+        return "user";
     }
 };

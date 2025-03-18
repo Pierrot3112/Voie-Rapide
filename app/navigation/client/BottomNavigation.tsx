@@ -4,11 +4,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../../constants";
-import HomeClient from "../../../components/Home.client"; // Assurez-vous que le chemin est correct
-import AccountClient from "../../../components/Account.client"; // Assurez-vous que le chemin est correct
-import { useAuth } from "../../context/AuthContext"; // Importez useAuth pour gérer la déconnexion
+import HomeClient from "../../../components/Home.client";
+import AccountClient from "../../../components/Account.client";
+import { useAuth } from "../../context/AuthContext";
 import ItinerairesResults from "./ItinerairesResults";
 import DetailItineraireScreen from "./DetailsItinerairesResults";
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+export const navigationRef = createNavigationContainerRef();
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -36,6 +39,13 @@ const HomeStack = () => (
 const BottomTabNavigation = () => {
   const { onLogout } = useAuth();
 
+  const handleLogout = () => {
+    onLogout(); 
+    if (navigationRef.isReady()) {
+      navigationRef.navigate("Login");
+    }
+  };
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -49,6 +59,7 @@ const BottomTabNavigation = () => {
           left: 0,
           elevation: 0,
           height: 70,
+          backgroundColor: COLORS.gray,
         },
       }}
     >
@@ -62,6 +73,11 @@ const BottomTabNavigation = () => {
               size={24}
               color={focused ? COLORS.bgBlue : COLORS.gray2}
             />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ color: focused ? COLORS.bgBlue : COLORS.gray2 }}>
+              Accueil
+            </Text>
           ),
         }}
       />
@@ -77,12 +93,17 @@ const BottomTabNavigation = () => {
               color={focused ? COLORS.bgBlue : COLORS.gray2}
             />
           ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ color: focused ? COLORS.bgBlue : COLORS.gray2 }}>
+              Mon Compte
+            </Text>
+          ),
         }}
       />
 
       <Tab.Screen
         name="Quitter"
-        component={HomeClient} 
+        component={HomeClient}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -93,7 +114,7 @@ const BottomTabNavigation = () => {
           ),
           tabBarButton: (props) => (
             <TouchableOpacity
-              onPress={onLogout}
+              onPress={handleLogout} 
               style={{
                 flex: 1,
                 justifyContent: "center",

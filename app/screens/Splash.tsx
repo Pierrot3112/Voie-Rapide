@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { View, Text, SafeAreaView, Image } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import styles from '../../styles/splash.style';
@@ -29,37 +29,36 @@ const Splash: React.FC<SplashProps> = ({ navigation }) => {
     useEffect(() => {
         text1Position.value = withTiming(0, { duration: 1000 });
         text2Position.value = withTiming(0, { duration: 1000 });
-
+    
         const timeout1 = setTimeout(() => {
             text1Position.value = withTiming(200, { duration: 1000 });
             text2Position.value = withTiming(-200, { duration: 1000 });
         }, 4000);
-
-        const timeout2 = setTimeout(() => {
-            navigation.replace('Login');
-        }, 5000);
-
-        return () => {
-            clearTimeout(timeout1);
-            clearTimeout(timeout2);
-        };
-
+    
         const checkAuth = async () => {
-            const token = await checkToken();
-            if (token) {
-              const role = await getRole(token);
-              if (role === 'client') {
-                navigation.navigate('HomeClient');
-              } else {
-                navigation.navigate('Login');
-              }
-            } else {
-              navigation.navigate('Login');
+            try {
+                const token = await checkToken(); 
+                if (!token) {
+                    navigation.replace('Login');
+                    return;
+                }
+    
+                const role = await getRole(token); 
+                navigation.replace(role === 'client' ? 'HomeClient' : 'Login');
+            } catch (error) {
+                navigation.replace('Login');
             }
         };
-
+    
         checkAuth();
+    
+        loaderOpacity.value = withTiming(1, { duration: 3000, easing: Easing.linear });
+    
+        return () => {
+            clearTimeout(timeout1);
+        };
     }, [navigation]);
+    
 
   
     const animatedText1Style = useAnimatedStyle(() => ({

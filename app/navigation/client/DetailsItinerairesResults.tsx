@@ -106,9 +106,9 @@ const DetailItineraireScreen = ({ route }) => {
       <View style={styles.itineraireContainer}>
         <Text style={styles.itineraireText}>Départ : {itineraireDetails?.depart_nom}</Text>
         <Text style={styles.itineraireText}>Arrivée : {itineraireDetails?.arrivee_nom}</Text>
-        <Text style={styles.itineraireText}>Distance : {itineraireDetails?.distance} km</Text>
+        <Text style={styles.itineraireText}>Distance :  {itineraireDetails?.distance} km</Text>
         <Text style={styles.itineraireText}>
-          Temps : {Number(itineraireDetails?.somme_duree_trajection).toFixed(0)} min
+          Temps :     {Number(itineraireDetails?.somme_duree_trajection).toFixed(0)} min
         </Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     paddingBottom: height * 0.5,
   },
   itineraireContainer: {
-    backgroundColor: 'green',
+    backgroundColor: COLORS.yellow,
     borderRadius: 8,
     padding: width * 0.03,
     marginBottom: height * 0.02,
@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLORS.bgBlue
   },
   errorText: {
     color: 'red',

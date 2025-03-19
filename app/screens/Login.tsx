@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { View, TextInput, TouchableOpacity, ImageBackground, Text, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
@@ -14,18 +14,15 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
     const [loading, setLoading] = useState(false);
+    
     const { onLogin } = useAuth();
     const navigation = useNavigation();
     const isOnline = useNetworkStatus();
-    const [isLogin, setIsLogin] = useState(false);
 
-    const togglePasswordVisibility = () => setSecureText(!secureText);
+    const togglePasswordVisibility = () => setSecureText(prev => !prev);
 
-    const login = async () => {
-        if (isLogin) return;
-
-        setIsLogin(true);
-        if (!num_tel || !password) {
+    const login = useCallback(async () => {
+        if (loading || !num_tel.trim() || !password.trim()) {
             Toast.show({
                 type: 'error',
                 text1: 'Champs obligatoires',
@@ -33,32 +30,28 @@ const Login = () => {
                 visibilityTime: 3000,
                 autoHide: true,
             });
-            setIsLogin(false);
             return;
         }
 
         setLoading(true);
-        const result = await onLogin(num_tel, password);
+        const result = await onLogin(num_tel.trim(), password.trim());
         setLoading(false);
 
         if (!result?.error) {
             navigation.navigate("Home");
-        } else {
-            setIsLogin(false);
         }
-    };
+    }, [num_tel, password, loading, onLogin, navigation]);
 
-    const handleRefresh = async () => {
-        setIsLogin(false);
+    const handleRefresh = useCallback(() => {
         setNumTel('');
         setPassword('');
-    };
+    }, []);
 
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <View style={styles.container}>
                 <ImageBackground source={require('../../assets/images/city.jpg')} style={styles.head}>
-                    <View style={styles.headContent}></View>
+                    <View style={styles.headContent} />
                 </ImageBackground>
                 <View style={styles.formLogin}>
                     <View style={styles.loginTitle}>
@@ -70,25 +63,23 @@ const Login = () => {
                         onChangeText={setNumTel}
                         value={num_tel}
                         keyboardType="phone-pad"
+                        autoCapitalize="none"
                     />
                     <View style={styles.inputPassword}>
                         <TextInput
-                            style={{ padding: 0, margin: 0, paddingHorizontal: 0, borderColor: COLORS.bgBlue }}
+                            style={{ flex: 1, borderColor: COLORS.bgBlue }}
                             placeholder="Mot de passe"
                             secureTextEntry={secureText}
                             onChangeText={setPassword}
                             value={password}
+                            autoCapitalize="none"
                         />
                         <TouchableOpacity onPress={togglePasswordVisibility}>
                             <Ionicons name={secureText ? "eye-outline" : "eye-off-outline"} size={24} color="gray" style={styles.icon} />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading || isLogin}>
-                        {loading ? (
-                            <ActivityIndicator size="small" color="#ffffff" />
-                        ) : (
-                            <Text style={styles.btnSubmitText}>Se Connecter</Text>
-                        )}
+                    <TouchableOpacity style={styles.btnSubmit} onPress={login} disabled={loading}>
+                        {loading ? <ActivityIndicator size="small" color="#ffffff" /> : <Text style={styles.btnSubmitText}>Se Connecter</Text>}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('ForgotPassWord')} disabled={loading}>
                         <Text style={styles.forgotPassword}>Mot de passe oublié</Text>

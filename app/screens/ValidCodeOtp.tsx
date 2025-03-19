@@ -32,7 +32,7 @@ const ValidCodeOtp = () => {
             const lastResendTime = await AsyncStorage.getItem('lastResendTime');
             if (lastResendTime) {
                 const now = Date.now();
-                const timeElapsed = now - parseInt(lastResendTime);
+                const timeElapsed = now - parseInt(lastResendTime, 10);
 
                 if (timeElapsed < 5 * 60 * 1000) {
                     setResendDisabled(true);
@@ -40,14 +40,24 @@ const ValidCodeOtp = () => {
                 }
             }
         };
+
         checkResendTime();
+    }, []);
 
-        const interval = setInterval(() => {
-            setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
-            if (timeLeft <= 0) setResendDisabled(false);
-        }, 1000);
-
-        return () => clearInterval(interval);
+    useEffect(() => {
+        if (timeLeft > 0) {
+            const timer = setInterval(() => {
+                setTimeLeft(prev => {
+                    if (prev <= 1) {
+                        setResendDisabled(false);
+                        clearInterval(timer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        }
     }, [timeLeft]);
 
     const handleSubmitOtp = async () => { 
@@ -93,7 +103,7 @@ const ValidCodeOtp = () => {
                         <Ionicons name='arrow-back' size={24} color={COLORS.primary} />
                     </TouchableOpacity>
 
-                    <Text style={styles.title}>Saisir le code réçu par SMS</Text>
+                    <Text style={styles.title}>Saisir le code reçu par SMS</Text>
 
                     <View style={styles.formContainer}>
                         <TextInput
@@ -103,20 +113,23 @@ const ValidCodeOtp = () => {
                             value={otp}
                             keyboardType="numeric"
                             maxLength={6}
-                            style={styles.codeInput}
+                            style={[styles.codeInput, { color: COLORS.primary }]} 
                         />
-                        {loading ? (
-                            <ActivityIndicator size="large" color={COLORS.bgBlue} />
-                        ) : (
-                            <TouchableOpacity onPress={handleSubmitOtp} style={styles.btnCodeValid}>
+
+                        <TouchableOpacity onPress={handleSubmitOtp} style={styles.btnCodeValid}>
+                            {loading ? (
+                                <ActivityIndicator size="small" color={COLORS.primary} />
+                            ) : (
                                 <Text style={styles.btnText}>Valider le code</Text>
-                            </TouchableOpacity>
-                        )}
+                            )}
+                        </TouchableOpacity>
 
                         <Text style={styles.text}>Vous n'avez pas reçu ce code?</Text>
                         <TouchableOpacity onPress={handleResendOtp} style={styles.resendBtn} disabled={resendDisabled}>
                             {resendDisabled ? (
-                                <Text style={styles.resendText}>Réessayez dans {Math.floor(timeLeft / 60)}:{timeLeft % 60}</Text>
+                                <Text style={styles.resendText}>
+                                    Réessayez dans {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                                </Text>
                             ) : (
                                 <Text style={styles.resendText}>Renvoyer le code</Text>
                             )}
@@ -134,7 +147,7 @@ export default ValidCodeOtp;
 const styles = StyleSheet.create({
     global: {
         flex: 1,
-        backgroundColor:  COLORS.bgBlue,
+        backgroundColor: COLORS.bgBlue,
     },
     container: {
         marginTop: width * 0.2,
@@ -187,19 +200,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: width * 0.045,
     },
-
-    resendBtn: {
-    },
-
     text: {
-        marginTop: height*0.03,
+        marginTop: height * 0.03,
         fontSize: 18,
         color: COLORS.primary,
     },
-
     resendText: {
         fontSize: 18,
         color: COLORS.tertiary,
-        textDecorationLine: "underline"
+        textDecorationLine: "underline",
     },
 });

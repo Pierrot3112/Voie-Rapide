@@ -29,7 +29,7 @@ const HomeStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="DetailsItinerairesResults"
+      name="DetailsItineraireScreen"
       component={DetailItineraireScreen}
       options={{ headerShown: false }}
     />
@@ -114,7 +114,7 @@ const BottomTabNavigation = () => {
           ),
           tabBarButton: (props) => (
             <TouchableOpacity
-              onPress={handleLogout} 
+              onPress={handleLogout}
               style={{
                 flex: 1,
                 justifyContent: "center",

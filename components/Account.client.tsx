@@ -16,6 +16,7 @@ import ChoixPayment from './payment/ChoixPayment';
 import { TextInput } from 'react-native-paper';
 import api from "../config/AxioConfig";
 import { COLORS } from 'constants';
+import Header from './Header';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,9 +30,9 @@ const AccountClient = () => {
   const [isValidating, setIsValidating] = useState(false);
 
   const options = [
-    { id: "1", name: "5 Crédits" },
-    { id: "2", name: "12 Crédits" },
-    { id: "3", name: "30 Crédits" },
+    { id: "1", name: "5 Crédits", price: "5 000 Ariary" },
+    { id: "2", name: "12 Crédits", price: "10 000 Ariary" },
+    { id: "3", name: "30 Crédits", price: "25 000 Ariary" },
   ];
 
   useEffect(() => {
@@ -91,29 +92,19 @@ const AccountClient = () => {
 
   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
   if (error) return <Text style={styles.error}>{error}</Text>;
+  const selectedOption = options.find(option => option.id === selectedId);
 
   return (
     <SafeAreaView style={styles.global}>
+      <Header />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: COLORS.bgBlue }}
       >
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.creditContainer}>
-            <View style={styles.creditCard}>
-              <Text style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: height * 0.01 }}>Mes crédits</Text>
-              <Text style={{ fontSize: 24, textAlign: 'center' }}>{user.credit}</Text>
-            </View>
-            <View style={styles.creditCard}>
-              <Text style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: height * 0.01 }}>Fix crédits</Text>
-              <Text>- 5 crédits: 5 000Ar</Text>
-              <Text>- 12 crédits: 10 000Ar</Text>
-              <Text>- 30 crédits: 25 000Ar</Text>
-            </View>
-          </View>
           <View style={styles.paymentContainer}>
             <Text style={styles.paymentTitle}>Choix de Crédit</Text>
             <View style={styles.container}>
@@ -130,6 +121,9 @@ const AccountClient = () => {
                 </TouchableOpacity>
               ))}
             </View>
+            <Text style={[styles.paymentTitle, { color: COLORS.primary }]}>
+               {selectedOption ? selectedOption.price : " "}
+            </Text>
             <Text style={styles.paymentTitle}>Choix de paiement</Text>
             <ChoixPayment />
             <TouchableOpacity

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert, FlatList, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, RadioButton } from 'react-native-paper';
 import styles from '../../styles/formSerach.style';
 import data from '../../util/points.json';
 import { COLORS } from 'constants';
+import Toast from 'react-native-toast-message';
 
 type ItinerairesResultsParams = {
   departureId: number;
@@ -43,7 +44,12 @@ const FormSearch = () => {
 
   const handleSearch = () => {
     if (departureId === null || arrivalId === null) {
-      Alert.alert('Erreur', 'Veuillez sélectionner un point de départ et un point d\'arrivée');
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur',
+        text2: 'Veuillez sélectionner un point de départ et un point d\'arrivée',
+        position: 'top', 
+      });
       return;
     }
 
@@ -64,7 +70,7 @@ const FormSearch = () => {
     <View style={styles.container}>
       {/* Champs de recherche */}
       <FlatList
-        data={[]} // Pas de données à afficher, car nous utilisons FlatList uniquement pour le rafraîchissement
+        data={[]} 
         keyExtractor={(item, index) => index.toString()}
         renderItem={null}
         ListHeaderComponent={
@@ -143,28 +149,47 @@ const FormSearch = () => {
                 onValueChange={(newValue) => setSelectedValue(parseInt(newValue))}
                 value={selectedValue.toString()}
               >
-                <View style={styles.radioItem}>
-                <RadioButton value="0" color={COLORS.secondary} />
-
-                  <Text style={{color: COLORS.secondary}}>Le plus rapide</Text>
-                </View>
-                <View style={styles.radioItem}>
-                  <RadioButton value="1"color= {COLORS.secondary} />
-                  <Text style={{color: COLORS.secondary}}>Le plus court</Text>
+              <View>
+                <TouchableOpacity 
+                  style={styles.radioItem} 
+                  onPress={() => setSelectedValue("0")}
+                  activeOpacity={0.7}
+                >
+                  <RadioButton 
+                    value="0"
+                    color={COLORS.secondary} 
+                    status={selectedValue === "0" ? "checked" : "unchecked"}
+                    onPress={() => setSelectedValue("0")}
+                  />
+                  <Text style={{ color: COLORS.secondary }}>Le plus rapide</Text>
+                </TouchableOpacity>
+              </View>
+                <View>
+                  <TouchableOpacity 
+                    style={styles.radioItem} 
+                    onPress={() => setSelectedValue("1")}
+                    activeOpacity={0.7}
+                  >
+                    <RadioButton 
+                      value="1"
+                      color={COLORS.secondary} 
+                      status={selectedValue === "1" ? "checked" : "unchecked"}
+                      onPress={() => setSelectedValue("1")}
+                    />
+                    <Text style={{ color: COLORS.secondary }}>Le plus court</Text>
+                  </TouchableOpacity>
                 </View>
               </RadioButton.Group>
             </View>
 
             {/* Bouton de recherche */}
-            <Button
-              mode="contained"
+            <TouchableOpacity
               onPress={handleSearch}
-              loading={loading}
               disabled={loading}
               style={styles.btn1}
             >
-              {loading ? 'Recherche en cours...' : 'Rechercher'}
-            </Button>
+              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>{loading ? 'Recherche en cours...' : 'Rechercher'}</Text>
+            </TouchableOpacity>
           </>
         }
         refreshControl={

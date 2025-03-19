@@ -91,7 +91,7 @@ const styles = StyleSheet.create<Styles>({
         flexDirection: "row",
         alignItems: 'center',
         width: width * 0.9, 
-        padding: height * 0.015, 
+        padding: height * 0.01, 
         fontSize: SIZES.medium,
         borderWidth: 1,
         borderColor: COLORS.bgBlue,

@@ -61,12 +61,35 @@ const ItinerairesResults = () => {
     }
   }, [departureId, arrivalId, selectedValue]);
 
-  // Appeler l'API au chargement du composant
   useEffect(() => {
     fetchResults();
   }, [fetchResults]);
 
-  // Filtrer les résultats invalides
+  const formatDuration = (minutes: number) => {
+    const totalSeconds = Math.round(minutes * 60);
+    
+    if (totalSeconds < 60) {
+      return `${totalSeconds} s`;
+    }
+  
+    const hours = Math.floor(totalSeconds / 3600);
+    const remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
+    const remainingSeconds = totalSeconds % 60;
+  
+    let formattedDuration = '';
+    if (hours > 0) {
+      formattedDuration += `${hours}h `;
+    }
+    if (remainingMinutes > 0 || hours > 0) {
+      formattedDuration += `${remainingMinutes}min `;
+    }
+    if (remainingSeconds > 0 || (remainingMinutes === 0 && hours === 0)) {
+      formattedDuration += `${remainingSeconds}s`;
+    }
+  
+    return formattedDuration.trim();
+  };
+  
   const validResults = results.filter((item) => item && item.itineraires_id !== undefined);
 
   return (
@@ -105,7 +128,7 @@ const ItinerairesResults = () => {
                 <View style={styles.itemContent}>
                   <Text style={styles.title}>En passant : {item.en_passant}</Text>
                   <Text style={styles.distance}>Distance: {item.distance} km</Text>
-                  <Text style={styles.duration}>Durée: {item.somme_duree_trajection} min</Text>
+                  <Text style={styles.duration}>Durée: {formatDuration(item.somme_duree_trajection)}</Text>
                 </View>
                 <Ionicons name="arrow-forward" style={styles.arrowIcon} size={30} color={COLORS.gray2} />
               </TouchableOpacity>
@@ -174,10 +197,12 @@ const styles = StyleSheet.create({
   distance: {
     fontSize: 14,
     color: '#666',
+    marginLeft: 10,
   },
   duration: {
     fontSize: 14,
     color: '#666',
+    marginLeft: 10,
   },
   icon: {
     flex: 1,

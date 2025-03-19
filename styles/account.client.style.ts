@@ -19,19 +19,9 @@ interface Styles {
 
 const styles = StyleSheet.create({
   global: {
-    paddingTop: height * 0.02,
-    paddingHorizontal: width * 0.03,
-    backgroundColor: COLORS.bgBlue,
     flex: 1,
-  },
-  creditContainer: {
-    flexDirection: 'row',
-    gap: width * 0.01,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: height * 0.2,
-    width: width * 0.95,
-    paddingVertical: height * 0.02,
+    backgroundColor: COLORS.gray2,
+    paddingTop: height * 0.035,
   },
   creditCard: {
     padding: width * 0.02,
@@ -43,7 +33,7 @@ const styles = StyleSheet.create({
   paymentContainer: {
     marginTop: height * 0.02,
     backgroundColor: 'transparent',
-    height: height * 0.4,
+    height: height * 0.5,
     width: width * 0.90,
     borderRadius: 15,
     alignSelf: 'center',
@@ -61,6 +51,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray
   },
   achatBtn: {
+    width: width * 0.8,
     alignSelf: 'center',
     paddingHorizontal: width * 0.1,
     paddingVertical: height * 0.015,

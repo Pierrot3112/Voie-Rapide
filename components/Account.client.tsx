@@ -15,7 +15,7 @@ import styles from '../styles/account.client.style';
 import ChoixPayment from './payment/ChoixPayment';
 import { TextInput } from 'react-native-paper';
 import api from "../config/AxioConfig";
-import { COLORS } from 'constants';
+import { COLORS } from '../constants';
 import Header from './Header';
 
 const { width, height } = Dimensions.get('window');
@@ -89,9 +89,19 @@ const AccountClient = () => {
       setIsValidating(false);
     }
   };
+  
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: COLORS.bgBlue }]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
 
-  if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-  if (error) return <Text style={styles.error}>{error}</Text>;
+  if (error) {
+    return <Text style={styles.error}>{error}</Text>;
+  }
+
   const selectedOption = options.find(option => option.id === selectedId);
 
   return (

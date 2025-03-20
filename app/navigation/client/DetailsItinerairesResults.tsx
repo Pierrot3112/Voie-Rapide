@@ -15,13 +15,39 @@ import { useNavigation } from '@react-navigation/native';
 import api from '../../../config/AxioConfig';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../../components/Header';
-import { COLORS } from 'constants';
+import { COLORS } from '../../../constants';
 
 const { width, height } = Dimensions.get('window');
 
 type DetailsItinerairesChoisiParams = {
   itinerairesId: number;
 };
+
+const formatDuration = (minutes: number) => {
+  const totalSeconds = Math.round(minutes * 60);
+  
+  if (totalSeconds < 60) {
+    return `${totalSeconds} s`;
+  }
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
+  const remainingSeconds = totalSeconds % 60;
+
+  let formattedDuration = '';
+  if (hours > 0) {
+    formattedDuration += `${hours}h `;
+  }
+  if (remainingMinutes > 0 || hours > 0) {
+    formattedDuration += `${remainingMinutes}min `;
+  }
+  if (remainingSeconds > 0 || (remainingMinutes === 0 && hours === 0)) {
+    formattedDuration += `${remainingSeconds}s`;
+  }
+
+  return formattedDuration.trim();
+};
+
 
 const DetailItineraireScreen = ({ route }) => {
   const { itinerairesId } = route.params as DetailsItinerairesChoisiParams;
@@ -128,7 +154,7 @@ const DetailItineraireScreen = ({ route }) => {
             >
               <Text style={styles.connectionText}>Distance : {connection.distance} km</Text>
               <Text style={styles.connectionText}>
-                Temps : {connection.last_information ? Number(connection.last_information.estimation).toFixed(0) : 'N/A'} min
+                Temps :  {formatDuration(connection.last_information.estimation)}
               </Text>
               <Text style={styles.connectionText}>
                 Trafic : {getTrafficIcon(connection.last_information?.couleur)}
@@ -166,7 +192,7 @@ const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
     marginBottom: height * 0.02,
-    padding: width * 0.03,
+    padding: width * 0.0001,
     borderRadius: 20,
     alignItems: 'center',
     height: height * 0.06,
@@ -179,7 +205,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: width * 0.04,
-    paddingBottom: height * 0.5,
+    paddingBottom: 70,
   },
   itineraireContainer: {
     backgroundColor: COLORS.yellow,

@@ -69,7 +69,11 @@ const ForgotPassword = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flexContainer}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.flexContainer}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+            >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name='arrow-back' size={30} color={COLORS.primary} />

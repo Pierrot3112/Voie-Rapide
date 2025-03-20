@@ -8,7 +8,7 @@ import HomeClient from "../../../components/Home.client";
 import AccountClient from "../../../components/Account.client";
 import { useAuth } from "../../context/AuthContext";
 import ItinerairesResults from "./ItinerairesResults";
-import DetailItineraireScreen from "./DetailsItinerairesResults";
+import DetailsItinerairesResults from "./DetailsItinerairesResults";
 import { createNavigationContainerRef } from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef();
@@ -29,18 +29,20 @@ const HomeStack = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="DetailsItineraireScreen"
-      component={DetailItineraireScreen}
+      name="DetailsItinerairesResults"
+      component={DetailsItinerairesResults}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );
 
+const DummyScreen = () => null;
+
 const BottomTabNavigation = () => {
   const { onLogout } = useAuth();
 
   const handleLogout = () => {
-    onLogout(); 
+    onLogout();
     if (navigationRef.isReady()) {
       navigationRef.navigate("Login");
     }
@@ -103,7 +105,7 @@ const BottomTabNavigation = () => {
 
       <Tab.Screen
         name="Quitter"
-        component={HomeClient}
+        component={DummyScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons

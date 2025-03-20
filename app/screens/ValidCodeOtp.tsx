@@ -61,6 +61,15 @@ const ValidCodeOtp = () => {
     }, [timeLeft]);
 
     const handleSubmitOtp = async () => { 
+        if (otp.length !== 6) {
+            Toast.show({
+                type: 'error',
+                text1: 'Code incomplet',
+                text2: 'Veuillez saisir les 6 chiffres du code'
+            });
+            return;
+        }
+
         setLoading(true);
         try {
             await api.post('/verify', { num_tel: phoneNumber, code: otp });
@@ -98,34 +107,49 @@ const ValidCodeOtp = () => {
     return (
         <PullToRefresh onRefresh={handleRefresh}>
             <SafeAreaView style={styles.global}>
-                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name='arrow-back' size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-
-                    <Text style={styles.title}>Saisir le code reçu par SMS</Text>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={styles.container}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+                >
+                    <View style={styles.header}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <Ionicons name='arrow-back' size={24} color={COLORS.primary} />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>Saisir le code reçu par SMS</Text>
+                        <Text style={styles.subTitle}>Envoyé au {phoneNumber}</Text>
+                    </View>
 
                     <View style={styles.formContainer}>
                         <TextInput
                             placeholder="Entrez le code de validation"
-                            placeholderTextColor={COLORS.primary}
+                            placeholderTextColor={COLORS.gray}
                             onChangeText={setOtp}
                             value={otp}
                             keyboardType="numeric"
                             maxLength={6}
-                            style={[styles.codeInput, { color: COLORS.primary }]} 
+                            style={styles.codeInput}
+                            autoFocus
                         />
 
-                        <TouchableOpacity onPress={handleSubmitOtp} style={styles.btnCodeValid}>
+                        <TouchableOpacity 
+                            onPress={handleSubmitOtp} 
+                            style={styles.btnCodeValid}
+                            disabled={loading}
+                        >
                             {loading ? (
-                                <ActivityIndicator size="small" color={COLORS.primary} />
+                                <ActivityIndicator size="small" color={COLORS.white} />
                             ) : (
                                 <Text style={styles.btnText}>Valider le code</Text>
                             )}
                         </TouchableOpacity>
 
                         <Text style={styles.text}>Vous n'avez pas reçu ce code?</Text>
-                        <TouchableOpacity onPress={handleResendOtp} style={styles.resendBtn} disabled={resendDisabled}>
+                        <TouchableOpacity 
+                            onPress={handleResendOtp} 
+                            style={[styles.resendBtn, resendDisabled && styles.disabledButton]}
+                            disabled={resendDisabled}
+                        >
                             {resendDisabled ? (
                                 <Text style={styles.resendText}>
                                     Réessayez dans {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
@@ -150,23 +174,28 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.bgBlue,
     },
     container: {
-        marginTop: width * 0.2,
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
         paddingHorizontal: width * 0.05,
+    },
+    header: {
+        marginTop: height * 0.1,
+        alignItems: 'center',
     },
     backButton: {
         position: 'absolute',
-        top: -height * 0.05,
-        left: width * 0.05,
-        zIndex: 10,
+        left: 0,
+        top: -height * 0.02,
     },
     title: {
         fontSize: width * 0.06,
         fontWeight: 'bold',
         color: COLORS.primary,
         textAlign: 'center',
+        marginBottom: height * 0.01,
+    },
+    subTitle: {
+        fontSize: width * 0.04,
+        color: COLORS.gray,
         marginBottom: height * 0.03,
     },
     formContainer: {
@@ -182,32 +211,39 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: COLORS.secondary,
-        backgroundColor: 'transparent',
+        backgroundColor: COLORS.white,
         paddingHorizontal: width * 0.04,
         fontSize: width * 0.045,
         textAlign: 'center',
+        color: COLORS.primary,
     },
     btnCodeValid: {
         backgroundColor: COLORS.secondary,
-        paddingVertical: height * 0.015,
-        marginTop: height * 0.02,
+        paddingVertical: height * 0.02,
+        marginTop: height * 0.03,
         width: '100%',
         borderRadius: 10,
         alignItems: 'center',
     },
     btnText: {
-        color: '#fff',
+        color: COLORS.white,
         fontWeight: 'bold',
         fontSize: width * 0.045,
     },
     text: {
-        marginTop: height * 0.03,
-        fontSize: 18,
+        marginTop: height * 0.04,
+        fontSize: width * 0.04,
         color: COLORS.primary,
     },
+    resendBtn: {
+        marginTop: height * 0.02,
+    },
     resendText: {
-        fontSize: 18,
+        fontSize: width * 0.04,
         color: COLORS.tertiary,
         textDecorationLine: "underline",
+    },
+    disabledButton: {
+        opacity: 0.5,
     },
 });

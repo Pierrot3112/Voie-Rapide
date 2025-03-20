@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, RadioButton } from 'react-native-paper';
 import styles from '../../styles/formSerach.style';
 import data from '../../util/points.json';
-import { COLORS } from 'constants';
+import { COLORS } from '../../constants';
 import Toast from 'react-native-toast-message';
 
 type ItinerairesResultsParams = {
@@ -47,7 +47,7 @@ const FormSearch = () => {
       Toast.show({
         type: 'error',
         text1: 'Erreur',
-        text2: 'Veuillez sélectionner un point de départ et un point d\'arrivée',
+        text2: "Veuillez sélectionner un point de départ et un point d'arrivée",
         position: 'top', 
       });
       return;
@@ -68,30 +68,31 @@ const FormSearch = () => {
 
   return (
     <View style={styles.container}>
-      {/* Champs de recherche */}
       <FlatList
         data={[]} 
         keyExtractor={(item, index) => index.toString()}
         renderItem={null}
+        keyboardShouldPersistTaps="always"
         ListHeaderComponent={
           <>
             {/* Point de départ */}
             <View style={styles.inputContainer}>
               <TextInput
                 label="Point de départ"
-                textColor= { COLORS.secondary }
-                value={departureQuery}
+                textColor={COLORS.secondary}
                 onChangeText={(text) => {
                   setDepartureQuery(text);
                   filterSuggestions(text, 'departure');
                 }}
                 style={styles.input}
               />
+              <Text>{departureQuery}</Text>
               {filteredDeparture.length > 0 && (
                 <View style={styles.suggestionContainer}>
                   <FlatList
                     data={filteredDeparture}
                     keyExtractor={(item) => item.id.toString()}
+                    keyboardShouldPersistTaps="always"
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={styles.suggestionItem}
@@ -101,7 +102,9 @@ const FormSearch = () => {
                           setFilteredDeparture([]);
                         }}
                       >
-                        <Text style={{color: COLORS.bgBlue}}>{item.nom} ({item.location})</Text>
+                        <Text style={{ color: COLORS.bgBlue }}>
+                          {item.nom} ({item.location})
+                        </Text>
                       </TouchableOpacity>
                     )}
                   />
@@ -113,19 +116,20 @@ const FormSearch = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 label="Point d'arrivée"
-                textColor= { COLORS.secondary }
-                value={arrivalQuery}
+                textColor={COLORS.secondary}
                 onChangeText={(text) => {
                   setArrivalQuery(text);
                   filterSuggestions(text, 'arrival');
                 }}
                 style={styles.input}
               />
+              <Text>{arrivalQuery}</Text>
               {filteredArrival.length > 0 && (
                 <View style={styles.suggestionContainer}>
                   <FlatList
                     data={filteredArrival}
                     keyExtractor={(item) => item.id.toString()}
+                    keyboardShouldPersistTaps="always"
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={styles.suggestionItem}
@@ -135,7 +139,9 @@ const FormSearch = () => {
                           setFilteredArrival([]);
                         }}
                       >
-                        <Text style={{color: COLORS.bgBlue}}>{item.nom} ({item.location})</Text>
+                        <Text style={{ color: COLORS.bgBlue }}>
+                          {item.nom} ({item.location})
+                        </Text>
                       </TouchableOpacity>
                     )}
                   />
@@ -149,32 +155,32 @@ const FormSearch = () => {
                 onValueChange={(newValue) => setSelectedValue(parseInt(newValue))}
                 value={selectedValue.toString()}
               >
-              <View>
-                <TouchableOpacity 
-                  style={styles.radioItem} 
-                  onPress={() => setSelectedValue("0")}
-                  activeOpacity={0.7}
-                >
-                  <RadioButton 
-                    value="0"
-                    color={COLORS.secondary} 
-                    status={selectedValue === "0" ? "checked" : "unchecked"}
-                    onPress={() => setSelectedValue("0")}
-                  />
-                  <Text style={{ color: COLORS.secondary }}>Le plus rapide</Text>
-                </TouchableOpacity>
-              </View>
                 <View>
                   <TouchableOpacity 
                     style={styles.radioItem} 
-                    onPress={() => setSelectedValue("1")}
+                    onPress={() => setSelectedValue(0)}
+                    activeOpacity={0.7}
+                  >
+                    <RadioButton 
+                      value="0"
+                      color={COLORS.secondary} 
+                      status={selectedValue === 0 ? "checked" : "unchecked"}
+                      onPress={() => setSelectedValue(0)}
+                    />
+                    <Text style={{ color: COLORS.secondary }}>Le plus rapide</Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity 
+                    style={styles.radioItem} 
+                    onPress={() => setSelectedValue(1)}
                     activeOpacity={0.7}
                   >
                     <RadioButton 
                       value="1"
                       color={COLORS.secondary} 
-                      status={selectedValue === "1" ? "checked" : "unchecked"}
-                      onPress={() => setSelectedValue("1")}
+                      status={selectedValue === 1 ? "checked" : "unchecked"}
+                      onPress={() => setSelectedValue(1)}
                     />
                     <Text style={{ color: COLORS.secondary }}>Le plus court</Text>
                   </TouchableOpacity>
@@ -188,15 +194,14 @@ const FormSearch = () => {
               disabled={loading}
               style={styles.btn1}
             >
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>{loading ? 'Recherche en cours...' : 'Rechercher'}</Text>
+              <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>
+                {loading ? 'Recherche en cours...' : 'Rechercher'}
+              </Text>
             </TouchableOpacity>
           </>
         }
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       />
     </View>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import api from '../config/AxioConfig';
 import { useNavigation } from "@react-navigation/native";
-import styles from 'styles/header.style';
+import styles from '../styles/header.style';
 
 const Header = () => {
 const navigation = useNavigation();
